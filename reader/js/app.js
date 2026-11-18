@@ -425,14 +425,43 @@
     else {
       const c = CopticCal.jdnToCoptic(j);
       out.push(el('h2', { class: 'ctitle' }, 'Daily Katamaros — ' + c.d + ' ' + (copText(j).split(' ')[1] || '')));
-      const links = [
-        ['Pauline Epistle', '/katameros-days.pdf'], ['Catholic Epistle', '/katameros-days.pdf'], ['Acts (Praxis)', '/katameros-days.pdf'],
-        ['Matins Psalm and Gospel', '/katameros-days.pdf'], ['Liturgy Psalm and Gospel', '/katameros-days.pdf']
-      ];
-      const isSunday = new Date(Date.UTC(CopticCal.jdnToGreg(j).y, CopticCal.jdnToGreg(j).m-1, CopticCal.jdnToGreg(j).d)).getUTCDay() === 0;
-      const pdf = isSunday ? '/katameros-sundays.pdf' : '/katameros-days.pdf';
-      out.push(el('p', { class: 'note', style: 'padding:0 16px' }, 'The daily readings are in the uploaded Katamaros volume. Automatic verse-by-verse extraction is not yet available; open the source volume for this Coptic date.'));
-      out.push(el('div', { class: 'list' }, el('a', { class: 'li', href: pdf, target: '_blank', rel: 'noopener' }, el('span', { class: 't' }, isSunday ? 'Open Sunday Katamaros (PDF)' : 'Open Weekday Katamaros (PDF)'))));
+      const daily = {
+        '3-9': [
+          ['Vespers Psalm','Psalm 32:11, 6','مزمور عشية'],
+          ['Vespers Gospel','Matthew 25:14–23','إنجيل عشية'],
+          ['Matins Psalm','Psalm 112:1–2','مزمور باكر'],
+          ['Matins Gospel','Luke 6:17–23','إنجيل باكر'],
+          ['Pauline Epistle','Romans 4:13–25; 5:1–5','البولس'],
+          ['Catholic Epistle','1 Peter 1:3–12','الكاثوليكون'],
+          ['Acts (Praxis)','Acts 11:15–24','الإبركسيس'],
+          ['Liturgy Psalm','Psalm 19:4; 132:9–10','مزمور القداس'],
+          ['Liturgy Gospel','Matthew 16:13–19','إنجيل القداس']
+        ]
+      };
+      const key = c.m + '-' + c.d;
+      const refs = daily[key];
+      if (refs) {
+        const holder = el('div', { class:'pad', style:'max-width:1100px;margin:auto' });
+        const toggle = el('button', { class:'btn', type:'button' }, 'Slideshow / عرض الشرائح');
+        const list = el('div', { class:'list' });
+        const slides = el('div', { style:'display:none;text-align:center;min-height:260px;padding:25px 12px' });
+        const prev = el('button', { class:'btn', type:'button' }, '← Previous / السابق');
+        const next = el('button', { class:'btn', type:'button' }, 'Next / التالي →');
+        const label = el('div', { style:'font-size:clamp(24px,4vw,40px);margin:25px 0;line-height:1.5' });
+        const count = el('p', { class:'note' });
+        let page = 0, active = false;
+        const render = () => { const v = refs[page]; label.replaceChildren(el('div', {}, v[0] + ' — ' + v[2]), el('div', {style:'margin-top:16px'}, v[1]));count.textContent=(page+1)+' / '+refs.length;prev.disabled=page===0;next.disabled=page===refs.length-1; };
+        prev.onclick=()=>{page=Math.max(0,page-1);render();};
+        next.onclick=()=>{page=Math.min(refs.length-1,page+1);render();};
+        toggle.onclick=()=>{active=!active;slides.style.display=active?'block':'none';list.style.display=active?'none':'block';render();};
+        for (const v of refs) list.append(el('div',{class:'li',style:'display:block'},el('strong',{},v[0]+' — '+v[2]),el('div',{style:'margin-top:8px'},v[1])));
+        slides.append(label,el('div',{style:'display:flex;gap:12px;justify-content:center;flex-wrap:wrap'},prev,next),count);
+        holder.append(toggle,list,slides);
+        out.push(holder);
+        out.push(el('p',{class:'note',style:'padding:0 16px'},'Scripture references verified for this date. Full passage text and Arabic translations are not yet loaded.'));
+      } else {
+        out.push(el('p', {class:'note',style:'padding:0 16px'}, 'Daily reading passages are still being indexed for this Coptic date. The uploaded Katamaros is retained as the source; no unverified passages are shown.'));
+      }
     }
     // Inline Coptic Synaxarium, selected by the same Coptic date as the readings.
     try {
