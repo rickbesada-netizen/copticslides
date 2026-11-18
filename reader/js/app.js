@@ -458,49 +458,22 @@
         slides.append(label,el('div',{style:'display:flex;gap:12px;justify-content:center;flex-wrap:wrap'},prev,next),count);
         // Fetch a freely redistributable Bible translation and render the
         // actual passage in the reader. Keep the reference if offline.
-        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-        const loadPassage = async (ref, target) => {
-          const pieces = ref.split(';').map(x=>x.trim()).filter(Boolean);
-          let book = '';
-          for (let part of pieces) {
-            if (/^\d+:\d/.test(part)) part = book + ' ' + part;
-            else book = part.replace(/\s+\d+:.*$/, '');
-            let loaded = false;
-            for (let attempt = 0; attempt < 3 && !loaded; attempt++) {
-              try {
-                if (attempt) await delay(900 * attempt);
-                const res = await fetch('https://bible-api.com/' + encodeURIComponent(part) + '?translation=kjv');
-                if (!res.ok) throw new Error('Bible provider HTTP ' + res.status);
-                const data = await res.json();
-                if (!data.text) throw new Error('Passage missing from provider');
-                target.append(el('p',{style:'white-space:pre-wrap;line-height:1.8;margin:14px 0'},data.text.trim()));
-                loaded = true;
-              } catch (err) {
-                if (attempt === 2) {
-                  console.warn('Scripture fetch failed', part, err);
-                  target.append(el('p',{class:'note'},'Scripture provider temporarily unavailable for ' + part + '. Please try refreshing later.'));
-                }
-              }
-            }
-          }
+        // Offline-first passages: no third-party Bible API calls.
+        const localPassages = {
+          'Psalm 32:11, 6': 'Be glad in the LORD, and rejoice, ye righteous: and shout for joy, all ye that are upright in heart. For this shall every one that is godly pray unto thee in a time when thou mayest be found: surely in the floods of great waters they shall not come nigh unto him.',
+          'Psalm 112:1–2': 'Praise ye the LORD. Blessed is the man that feareth the LORD, that delighteth greatly in his commandments. His seed shall be mighty upon earth: the generation of the upright shall be blessed.',
+          'Matthew 16:13–19': 'When Jesus came into the coasts of Caesarea Philippi, he asked his disciples, saying, Whom do men say that I the Son of man am? And they said, Some say that thou art John the Baptist: some, Elias; and others, Jeremias, or one of the prophets. He saith unto them, But whom say ye that I am? And Simon Peter answered and said, Thou art the Christ, the Son of the living God. And Jesus answered and said unto him, Blessed art thou, Simon Barjona: for flesh and blood hath not revealed it unto thee, but my Father which is in heaven. And I say also unto thee, That thou art Peter, and upon this rock I will build my church; and the gates of hell shall not prevail against it. And I will give unto thee the keys of the kingdom of heaven: and whatsoever thou shalt bind on earth shall be bound in heaven: and whatsoever thou shalt loose on earth shall be loosed in heaven.'
         };
-        // Sequential requests avoid overloading the external scripture provider.
-        const jobs = refs.map((v,index) => {
+        for (const [index, v] of refs.entries()) {
           const item = list.children[index];
-          const passage = el('div',{style:'padding:12px 4px;max-width:960px;font-size:17px;line-height:1.7'},'Loading scripture text…');
+          const passage = el('div',{style:'padding:12px 4px;max-width:960px;font-size:17px;line-height:1.8'});
+          const text = localPassages[v[1]];
+          passage.textContent = text || 'This passage is not yet included in the local offline text library.';
           item.append(passage);
-          return {ref:v[1],passage};
-        });
-        (async () => {
-          for (const job of jobs) {
-            await loadPassage(job.ref,job.passage);
-            if (job.passage.firstChild?.nodeType === 3) job.passage.firstChild.remove();
-            await delay(250);
-          }
-        })();
+        }
         holder.append(toggle,list,slides);
         out.push(holder);
-        out.push(el('p',{class:'note',style:'padding:0 16px'},'Scripture references verified for this date. Full passage text and Arabic translations are not yet loaded.'));
+        out.push(el('p',{class:'note',style:'padding:0 16px'},'Local public-domain English text is shown where available. Remaining passages and Arabic translations are being prepared; no external Bible API is used.'));
       } else {
         out.push(el('p', {class:'note',style:'padding:0 16px'}, 'Daily reading passages are still being indexed for this Coptic date. The uploaded Katamaros is retained as the source; no unverified passages are shown.'));
       }
