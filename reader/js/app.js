@@ -434,6 +434,18 @@
       out.push(el('p', { class: 'note', style: 'padding:0 16px' }, 'The daily readings are in the uploaded Katamaros volume. Automatic verse-by-verse extraction is not yet available; open the source volume for this Coptic date.'));
       out.push(el('div', { class: 'list' }, el('a', { class: 'li', href: pdf, target: '_blank', rel: 'noopener' }, el('span', { class: 't' }, isSunday ? 'Open Sunday Katamaros (PDF)' : 'Open Weekday Katamaros (PDF)'))));
     }
+    // Inline Coptic Synaxarium, selected by the same Coptic date as the readings.
+    try {
+      const c = CopticCal.jdnToCoptic(j);
+      const syn = await getJSON('../assets/synaxarium-full.json');
+      const entry = syn.entries && syn.entries[c.m + '-' + c.d];
+      if (entry && entry.text) {
+        out.push(el('h2', { class: 'ctitle' }, 'Synaxarium — ' + copText(j)));
+        const article = el('div', { class: 'pad', style: 'white-space:pre-wrap;line-height:1.85;text-align:start;max-width:1000px;margin:auto' });
+        article.textContent = entry.text;
+        out.push(article);
+      }
+    } catch (err) { console.warn('Synaxarium entry unavailable', err); }
     // seasonal texts from the doxologies / responses / hymns
     const kws = SEASON_KEYWORDS[se.key] || [];
     const seasonal = [];
