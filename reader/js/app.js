@@ -459,21 +459,17 @@
         // Fetch a freely redistributable Bible translation and render the
         // actual passage in the reader. Keep the reference if offline.
         // Offline-first passages: no third-party Bible API calls.
-        const localPassages = {
-          'Psalm 32:11, 6': 'Be glad in the LORD, and rejoice, ye righteous: and shout for joy, all ye that are upright in heart. For this shall every one that is godly pray unto thee in a time when thou mayest be found: surely in the floods of great waters they shall not come nigh unto him.',
-          'Psalm 112:1–2': 'Praise ye the LORD. Blessed is the man that feareth the LORD, that delighteth greatly in his commandments. His seed shall be mighty upon earth: the generation of the upright shall be blessed.',
-          'Matthew 16:13–19': 'When Jesus came into the coasts of Caesarea Philippi, he asked his disciples, saying, Whom do men say that I the Son of man am? And they said, Some say that thou art John the Baptist: some, Elias; and others, Jeremias, or one of the prophets. He saith unto them, But whom say ye that I am? And Simon Peter answered and said, Thou art the Christ, the Son of the living God. And Jesus answered and said unto him, Blessed art thou, Simon Barjona: for flesh and blood hath not revealed it unto thee, but my Father which is in heaven. And I say also unto thee, That thou art Peter, and upon this rock I will build my church; and the gates of hell shall not prevail against it. And I will give unto thee the keys of the kingdom of heaven: and whatsoever thou shalt bind on earth shall be bound in heaven: and whatsoever thou shalt loose on earth shall be loosed in heaven.'
-        };
+        // NKJV-only policy: do not display KJV passages as NKJV.
+        // Complete NKJV passages require an authorised text source.
         for (const [index, v] of refs.entries()) {
           const item = list.children[index];
-          const passage = el('div',{style:'padding:12px 4px;max-width:960px;font-size:17px;line-height:1.8'});
-          const text = localPassages[v[1]];
-          passage.textContent = text || 'This passage is not yet included in the local offline text library.';
-          item.append(passage);
+          const note = el('div', { style:'padding:12px 4px;max-width:960px;line-height:1.8' },
+            'NKJV · ' + v[1] + ' — Full passage text pending an authorised NKJV source.');
+          item.append(note);
         }
         holder.append(toggle,list,slides);
         out.push(holder);
-        out.push(el('p',{class:'note',style:'padding:0 16px'},'Local public-domain English text is shown where available. Remaining passages and Arabic translations are being prepared; no external Bible API is used.'));
+        out.push(el('p',{class:'note',style:'padding:0 16px'},'NKJV references are displayed. Full NKJV passage text requires publishing authorisation; no KJV text or external Bible API is used.'));
       } else {
         out.push(el('p', {class:'note',style:'padding:0 16px'}, 'Daily reading passages are still being indexed for this Coptic date. The uploaded Katamaros is retained as the source; no unverified passages are shown.'));
       }
