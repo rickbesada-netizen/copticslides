@@ -12,4 +12,4 @@ async function mountSaved(){try{const f=await restoreFile();if(!f){saved.textCon
 file.addEventListener('change',()=>setTimeout(mountSaved,300));
 mountSaved();
 })();
-</script></body></html>
+</script><script>(async function(){try{const u="/documents/praise-and-worship.pdf";const r=await fetch(u,{method:'HEAD',cache:'no-store'});if(!r.ok||!(r.headers.get('content-type')||'').includes('pdf'))return;const v=document.getElementById("pdf-view");v.src=u+'#page=1';v.hidden=false;v.style.display='block';const info=document.createElement('p');info.textContent='Hosted library PDF loaded automatically. Available on every device.';info.style.color='#e8c56a';v.insertAdjacentElement('beforebegin',info);document.getElementById('pdf-controls').hidden=false;document.getElementById('pdf-controls').style.display='flex'; }catch(e){}})();</script></body></html>
