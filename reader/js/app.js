@@ -463,8 +463,8 @@
           const pieces = ref.split(';').map(x=>x.trim()).filter(Boolean);
           let book = '';
           for (let part of pieces) {
-            if (/^\\d+:\\d/.test(part)) part = book + ' ' + part;
-            else book = part.replace(/\\s+\\d+:.*$/, '');
+            if (/^\d+:\d/.test(part)) part = book + ' ' + part;
+            else book = part.replace(/\s+\d+:.*$/, '');
             let loaded = false;
             for (let attempt = 0; attempt < 3 && !loaded; attempt++) {
               try {
