@@ -1,5 +1,5 @@
 /* Offline cache: app shell precached, data and images cached on first use */
-const V = 'lr-v9';
+const V = 'lr-v10';
 const SHELL = ['./', 'index.html', 'css/app.css', 'js/app.js', 'js/i18n.js', 'js/translit.js', 'js/calendar.js', 'js/icons.js', 'js/art.js', 'manifest.webmanifest',
   'fonts/coptic.woff2', 'fonts/amiri-400.woff2', 'fonts/amiri-700.woff2', 'fonts/garamond-400.woff2', 'fonts/garamond-600.woff2', 'fonts/garamond-400i.woff2',
   'data/library.json', 'icons/icon-192.png'];
