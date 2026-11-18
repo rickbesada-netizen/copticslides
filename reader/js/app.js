@@ -456,6 +456,32 @@
         toggle.onclick=()=>{active=!active;slides.style.display=active?'block':'none';list.style.display=active?'none':'block';render();};
         for (const v of refs) list.append(el('div',{class:'li',style:'display:block'},el('strong',{},v[0]+' — '+v[2]),el('div',{style:'margin-top:8px'},v[1])));
         slides.append(label,el('div',{style:'display:flex;gap:12px;justify-content:center;flex-wrap:wrap'},prev,next),count);
+        // Fetch a freely redistributable Bible translation and render the
+        // actual passage in the reader. Keep the reference if offline.
+        const loadPassage = async (ref, target) => {
+          const pieces = ref.split(';').map(x=>x.trim()).filter(Boolean);
+          let book = '';
+          for (let part of pieces) {
+            if (/^[0-9]+:[0-9]/.test(part)) part = book + ' ' + part;
+            else book = part.replace(/\\s+\\d+:.*$/, '');
+            try {
+              const url = 'https://bible-api.com/' + encodeURIComponent(part) + '?translation=kjv';
+              const res = await fetch(url);
+              if (!res.ok) throw new Error('Passage unavailable');
+              const data = await res.json();
+              if (!data.text) throw new Error('No text returned');
+              target.append(el('p', {style:'white-space:pre-wrap;line-height:1.8;margin:14px 0'}, data.text.trim()));
+            } catch (err) {
+              target.append(el('p',{class:'note'}, 'Full passage could not load. Check your internet connection.'));
+            }
+          }
+        };
+        for (const [index, v] of refs.entries()) {
+          const item = list.children[index];
+          const passage = el('div',{style:'padding:12px 4px;max-width:960px;font-size:17px;line-height:1.7'},'Loading scripture text…');
+          item.append(passage);
+          loadPassage(v[1],passage).then(()=>{if(passage.firstChild?.nodeType===3)passage.firstChild.remove()});
+        }
         holder.append(toggle,list,slides);
         out.push(holder);
         out.push(el('p',{class:'note',style:'padding:0 16px'},'Scripture references verified for this date. Full passage text and Arabic translations are not yet loaded.'));
