@@ -415,7 +415,25 @@
       const docsOf = nd => nd.items.flatMap(x => x.doc ? [x.doc] : x.node ? docsOf(lib.nodes[x.node]) : []);
       if (n) for (const d of docsOf(n)) items.push(el('a', { class: 'li', href: '#/doc/' + d }, el('span', { class: 't' }, tt(lib.docs[d].title))));
     }
-    if (items.length) out.push(el('div', { class: 'list' }, items)); else out.push(el('p', { class: 'empty' }, t('noOccReadings')));
+    if (holy && holy !== 'easter') {
+      out.push(el('p', { class: 'note', style: 'padding:12px 16px' }, 'Holy Pascha uses its own day-and-hour services, not the ordinary Katamaros weekday readings. Covenant Thursday and Bright Saturday retain their appointed special services.'));
+      if (items.length) out.push(el('h2', { class: 'ctitle' }, 'Holy Pascha services'), el('div', { class: 'list' }, items));
+      out.push(el('div', { class: 'pad' }, el('a', { class: 'btn', href: '#/n/pascha' }, 'Browse Holy Pascha'), ' ', el('a', { class: 'btn', href: '#/date' }, t('selectDate'))));
+      view.replaceChildren(...out); return;
+    }
+    if (items.length) out.push(el('div', { class: 'list' }, items));
+    else {
+      const c = CopticCal.jdnToCoptic(j);
+      out.push(el('h2', { class: 'ctitle' }, 'Daily Katamaros — ' + c.d + ' ' + (copText(j).split(' ')[1] || '')));
+      const links = [
+        ['Pauline Epistle', '/katameros-days.pdf'], ['Catholic Epistle', '/katameros-days.pdf'], ['Acts (Praxis)', '/katameros-days.pdf'],
+        ['Matins Psalm and Gospel', '/katameros-days.pdf'], ['Liturgy Psalm and Gospel', '/katameros-days.pdf']
+      ];
+      const isSunday = new Date(Date.UTC(CopticCal.jdnToGreg(j).y, CopticCal.jdnToGreg(j).m-1, CopticCal.jdnToGreg(j).d)).getUTCDay() === 0;
+      const pdf = isSunday ? '/katameros-sundays.pdf' : '/katameros-days.pdf';
+      out.push(el('p', { class: 'note', style: 'padding:0 16px' }, 'The daily readings are in the uploaded Katamaros volume. Automatic verse-by-verse extraction is not yet available; open the source volume for this Coptic date.'));
+      out.push(el('div', { class: 'list' }, el('a', { class: 'li', href: pdf, target: '_blank', rel: 'noopener' }, el('span', { class: 't' }, isSunday ? 'Open Sunday Katamaros (PDF)' : 'Open Weekday Katamaros (PDF)'))));
+    }
     // seasonal texts from the doxologies / responses / hymns
     const kws = SEASON_KEYWORDS[se.key] || [];
     const seasonal = [];
