@@ -458,30 +458,46 @@
         slides.append(label,el('div',{style:'display:flex;gap:12px;justify-content:center;flex-wrap:wrap'},prev,next),count);
         // Fetch a freely redistributable Bible translation and render the
         // actual passage in the reader. Keep the reference if offline.
+        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
         const loadPassage = async (ref, target) => {
           const pieces = ref.split(';').map(x=>x.trim()).filter(Boolean);
           let book = '';
           for (let part of pieces) {
-            if (/^[0-9]+:[0-9]/.test(part)) part = book + ' ' + part;
-            else book = part.replace(/\s+\d+:.*$/, '');
-            try {
-              const url = 'https://bible-api.com/' + encodeURIComponent(part) + '?translation=kjv';
-              const res = await fetch(url);
-              if (!res.ok) throw new Error('Passage unavailable');
-              const data = await res.json();
-              if (!data.text) throw new Error('No text returned');
-              target.append(el('p', {style:'white-space:pre-wrap;line-height:1.8;margin:14px 0'}, data.text.trim()));
-            } catch (err) {
-              target.append(el('p',{class:'note'}, 'Full passage could not load. Check your internet connection.'));
+            if (/^\\d+:\\d/.test(part)) part = book + ' ' + part;
+            else book = part.replace(/\\s+\\d+:.*$/, '');
+            let loaded = false;
+            for (let attempt = 0; attempt < 3 && !loaded; attempt++) {
+              try {
+                if (attempt) await delay(900 * attempt);
+                const res = await fetch('https://bible-api.com/' + encodeURIComponent(part) + '?translation=kjv');
+                if (!res.ok) throw new Error('Bible provider HTTP ' + res.status);
+                const data = await res.json();
+                if (!data.text) throw new Error('Passage missing from provider');
+                target.append(el('p',{style:'white-space:pre-wrap;line-height:1.8;margin:14px 0'},data.text.trim()));
+                loaded = true;
+              } catch (err) {
+                if (attempt === 2) {
+                  console.warn('Scripture fetch failed', part, err);
+                  target.append(el('p',{class:'note'},'Scripture provider temporarily unavailable for ' + part + '. Please try refreshing later.'));
+                }
+              }
             }
           }
         };
-        for (const [index, v] of refs.entries()) {
+        // Sequential requests avoid overloading the external scripture provider.
+        const jobs = refs.map((v,index) => {
           const item = list.children[index];
           const passage = el('div',{style:'padding:12px 4px;max-width:960px;font-size:17px;line-height:1.7'},'Loading scripture text…');
           item.append(passage);
-          loadPassage(v[1],passage).then(()=>{if(passage.firstChild?.nodeType===3)passage.firstChild.remove()});
-        }
+          return {ref:v[1],passage};
+        });
+        (async () => {
+          for (const job of jobs) {
+            await loadPassage(job.ref,job.passage);
+            if (job.passage.firstChild?.nodeType === 3) job.passage.firstChild.remove();
+            await delay(250);
+          }
+        })();
         holder.append(toggle,list,slides);
         out.push(holder);
         out.push(el('p',{class:'note',style:'padding:0 16px'},'Scripture references verified for this date. Full passage text and Arabic translations are not yet loaded.'));
