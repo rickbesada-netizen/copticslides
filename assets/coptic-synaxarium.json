@@ -1,0 +1,14 @@
+{
+  "source": "Coptic Synaxarium (uploaded Coptic edition)",
+  "note": "This index is being verified against the supplied Coptic Synaxarium. Ethiopian Synaxarium is excluded. No complete copyrighted source text reproduced.",
+  "days": {
+    "1-1": {
+      "title": "1 Thout — Nayrouz",
+      "commemorations": [
+        "Feast of El-Nayrouz (Coptic New Year)",
+        "Martyrdom of St. Bartholomew the Apostle",
+        "Departure of St. Melyos (Milius), third Pope of Alexandria"
+      ]
+    }
+  }
+}
