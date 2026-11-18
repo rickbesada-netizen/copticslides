@@ -463,7 +463,7 @@
           let book = '';
           for (let part of pieces) {
             if (/^[0-9]+:[0-9]/.test(part)) part = book + ' ' + part;
-            else book = part.replace(/\\s+\\d+:.*$/, '');
+            else book = part.replace(/\s+\d+:.*$/, '');
             try {
               const url = 'https://bible-api.com/' + encodeURIComponent(part) + '?translation=kjv';
               const res = await fetch(url);
