@@ -61,11 +61,12 @@
   let LIB = null;
   const cache = new Map();
   const getJSON = url => { if (!cache.has(url)) cache.set(url, fetch(url).then(r => { if (!r.ok) throw new Error(url + ' ' + r.status); return r.json(); })); return cache.get(url); };
-  async function library() { if (!LIB) LIB = await getJSON('data/library.json'); return LIB; }
+  async function library() { if (!LIB) { LIB = await getJSON('data/library.json'); addReadingNodes(LIB); } return LIB; }
   async function loadDoc(id) {
     const lib = await library();
     const m = lib.docs[id];
     if (!m) return null;
+    if (m.virtual) return { meta: m, sec: await buildReadingDoc(id) };
     const d = await getJSON('data/' + m.file);
     const sec = d.sections.find(s => s.id === (m.parent || id));
     if (!sec) return null;
@@ -83,6 +84,123 @@
     return Object.values(LIB.nodes).find(n => n.items.some(x => x.node === nid)) || null;
   }
   const iconOf = key => (window.TILE_ART[key] || window.TILE_ART.default);
+
+
+  // ------------------------------------------------------------------ daily readings (Katameros)
+  // Readings > Vespers / Matins / Liturgy, built for the selected date from the Katameros references
+  // (data/katameros.json), the Synaxarium (data/synaxarium.json) and the deacon's responses.
+  const RD = {
+    'rd-v-pg': { node: 'rd-vespers', svc: 'vespers', part: 'pg', title: { en: 'Psalm and Gospel', ar: 'المزمور والإنجيل' } },
+    'rd-m-pg': { node: 'rd-matins', svc: 'matins', part: 'pg', title: { en: 'Psalm and Gospel', ar: 'المزمور والإنجيل' } },
+    'rd-l-pauline': { node: 'rd-liturgy', svc: 'liturgy', part: 'pauline', title: { en: 'Pauline Epistle', ar: 'البولس' } },
+    'rd-l-catholic': { node: 'rd-liturgy', svc: 'liturgy', part: 'catholic', title: { en: 'Catholic Epistle', ar: 'الكاثوليكون' } },
+    'rd-l-acts': { node: 'rd-liturgy', svc: 'liturgy', part: 'acts', title: { en: 'Praxis', ar: 'الإبركسيس' } },
+    'rd-l-synax': { node: 'rd-liturgy', svc: 'liturgy', part: 'synax', title: { en: 'Synaxarion', ar: 'السنكسار' } },
+    'rd-l-pg': { node: 'rd-liturgy', svc: 'liturgy', part: 'pg', title: { en: 'Psalm and Gospel', ar: 'المزمور والإنجيل' } },
+  };
+  function addReadingNodes(lib) {
+    if (lib.nodes['rd-liturgy']) return;
+    for (const [id, d] of Object.entries(RD)) lib.docs[id] = { virtual: true, title: d.title, heads: [] };
+    const node = (id, en, ar, icon, docs) => (lib.nodes[id] = { id, title: { en, ar }, icon, view: 'list', items: docs.map(doc => ({ doc })) });
+    node('rd-vespers', 'Vespers', 'عشية', 'vespers', ['rd-v-pg']);
+    node('rd-matins', 'Matins', 'باكر', 'matins', ['rd-m-pg']);
+    node('rd-liturgy', 'Liturgy', 'القداس', 'liturgy', ['rd-l-pauline', 'rd-l-catholic', 'rd-l-acts', 'rd-l-synax', 'rd-l-pg']);
+    const r = lib.nodes.readings;
+    if (r) r.items = [{ node: 'rd-vespers' }, { node: 'rd-matins' }, { node: 'rd-liturgy' }, ...r.items.filter(x => x.special !== 'occasion-readings'), { special: 'occasion-readings', title: { en: "Today's Readings", ar: 'قراءات اليوم' }, icon: 'today' }];
+  }
+
+  const AR_BOOK = { Psalm: 'المزامير', Matthew: 'متى', Mark: 'مرقس', Luke: 'لوقا', John: 'يوحنا', Acts: 'أعمال الرسل', Romans: 'رومية',
+    '1 Corinthians': 'كورنثوس الأولى', '2 Corinthians': 'كورنثوس الثانية', Galatians: 'غلاطية', Ephesians: 'أفسس', Philippians: 'فيلبي',
+    Colossians: 'كولوسي', '1 Thessalonians': 'تسالونيكي الأولى', '2 Thessalonians': 'تسالونيكي الثانية', '1 Timothy': 'تيموثاوس الأولى',
+    '2 Timothy': 'تيموثاوس الثانية', Titus: 'تيطس', Philemon: 'فليمون', Hebrews: 'العبرانيين', James: 'يعقوب', '1 Peter': 'بطرس الأولى',
+    '2 Peter': 'بطرس الثانية', '1 John': 'يوحنا الأولى', '2 John': 'يوحنا الثانية', '3 John': 'يوحنا الثالثة', Jude: 'يهوذا', Revelation: 'رؤيا يوحنا' };
+  const arNum = s => s.replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]).replace(/&/g, 'و');
+  // "13:24-43" or "1:1-14 & 2:1-4" or "104:4,3" -> tappable parts, each a plain reference
+  const refParts = r => r.ref.split(/\s*[&;]\s*/).reduce((acc, part) => {
+    const c = /^(\d+):/.exec(part);
+    if (c) acc.push(r.book + ' ' + part); else if (acc.length) acc.push(acc[acc.length - 1].replace(/:.*$/, ':') + part); return acc;
+  }, []);
+  const FEAST_DAYS = new Set(['1-1', '1-17', '4-28', '4-29', '5-6', '5-10', '5-11', '5-12', '5-13', '6-8', '7-29', '9-24', '12-13']);
+
+  // which Katameros entry applies on day j
+  async function readingsFor(j) {
+    const K = await getJSON('data/katameros.json');
+    const c = CopticCal.jdnToCoptic(j), key = c.m + '-' + c.d;
+    const E = CopticCal.easterJDN(CopticCal.jdnToGreg(j).y), diff = j - E;
+    const sunday = (j + 1) % 7 === 0;
+    const day = Object.assign({ src: 'Katameros, Days of the Year, p. ' + K.days[key]?.page }, K.days[key]);
+    if (diff >= -6 && diff <= -1) return { pascha: true, day };                        // Holy Week: Pascha book
+    if (diff === 0) return Object.assign({ src: 'Katameros of the Sundays, Easter' }, K.sundays.easter);
+    if (sunday && !FEAST_DAYS.has(key)) {
+      let k = null;
+      if (diff >= -56 && diff <= -14 && diff % 7 === 0) k = 'lent-' + (8 + diff / 7);   // E-56 pre-Lent ... E-14 sixth Sunday
+      else if (diff >= 7 && diff <= 35) k = 'pent-' + diff / 7;
+      else if (diff === 42) k = 'pent-6';
+      else if (diff === 49) k = 'pentecost';
+      else if (c.m === 13) k = '13-1';
+      else { const n = Math.ceil(c.d / 7); k = n >= 5 ? 'fifth' : c.m + '-' + n; }
+      const e = K.sundays[k];
+      if (e) return Object.assign({ src: 'Katameros of the Sundays, ' + e.occasion + ', p. ' + e.page }, e);
+    }
+    if (diff === 39) return Object.assign({ src: 'Katameros of the Sundays, Ascension' }, K.sundays.ascension);
+    if ((diff > -56 && diff < -7) || (diff > 0 && diff < 49)) return { missing: diff < 0 ? 'lent' : 'fifty', day };
+    return day;
+  }
+
+  // the deacon's responses around each reading, cut from the Deacon book by heading
+  async function deaconSlice(secId, fromHead, toHead) {
+    const d = await getJSON('data/deacon.json');
+    const rows = d.sections.find(s => s.id === secId).rows;
+    const find = (h, from = 0) => rows.findIndex((r, i) => i >= from && r.kind === 'heading' && (r.en || '').trim().toUpperCase().startsWith(h.toUpperCase()));
+    const a = find(fromHead), b = toHead ? find(toHead, a + 1) : rows.length;
+    return rows.slice(a, b < 0 ? undefined : b).map(r => Object.assign({}, r));
+  }
+  function readingRows(label, r) {
+    if (!r) return [{ kind: 'rubric', en: label + ': not listed in the Katameros for this day.' }];
+    const parts = refParts(r);
+    return [
+      { kind: 'heading', en: r.book + ' ' + r.ref, ar: (AR_BOOK[r.book] || r.book) + ' ' + arNum(r.ref) },
+      ...parts.map(p => ({ en: p + ' (NKJV)', cls: 'bgref' })),
+      { kind: 'rubric', en: 'Tap the reference to read the passage in the New King James Version.' },
+    ];
+  }
+  async function buildReadingDoc(id) {
+    const def = RD[id], j = nowJDN();
+    const c = CopticCal.jdnToCoptic(j);
+    const R = await readingsFor(j);
+    const dateLine = copText(j) + ' · ' + gregText(j);
+    const head = [{ kind: 'heading', en: tt(def.title) + ' — ' + dateLine, ar: def.title.ar },
+      { kind: 'rubric', en: (R.occasion || R.day?.occasion || '') + (R.src ? ' (' + R.src + ')' : '') }];
+    let rows = [];
+    if (R.pascha) rows = [{ kind: 'rubric', en: 'During Holy Week the readings of each hour are in the Holy Pascha book (Readings › Holy Pascha).' }];
+    else if (R.missing && def.part !== 'synax') rows = [{ kind: 'rubric', en: (R.missing === 'lent' ? 'Great Lent weekday' : 'Holy Fifty Days weekday') + ' readings come from the ' + (R.missing === 'lent' ? 'Katameros of Great Lent' : 'Katameros of the Holy Fifty Days') + ', which is not in the library yet.' }];
+    else if (def.part === 'synax') {
+      const S2 = await getJSON('data/synaxarium.json');
+      const e = S2.days[c.m + '-' + c.d];
+      rows = await deaconSlice('dc-liturgy-of-st-basil', 'APEKRAN', 'THE TRISAGION');
+      const body = e ? [{ kind: 'heading', en: 'Synaxarium — ' + copText(j), ar: 'السنكسار' },
+        ...e.titles.map(x => ({ kind: 'rubric', en: x })), ...e.paras.map(x => ({ en: x }))]
+        : [{ kind: 'rubric', en: 'This day is not in the Synaxarium book.' }];
+      rows = [...body, ...rows];
+    } else if (def.svc !== 'liturgy') {
+      const svc = R[def.svc] || {};
+      rows = await deaconSlice('dc-offering-of-incense-vespers-matins', 'LITANY OF THE GOSPEL', '(Concluding Prayer');
+      rows = rows.flatMap(r => /^\(The Psalm\)/.test(r.en || '') ? readingRows('Psalm', svc.psalm) : /^\(The Gospel\)/.test(r.en || '') ? readingRows('Gospel', svc.gospel) : [r]);
+      if (!R[def.svc] || (!svc.psalm && !svc.gospel)) rows = [{ kind: 'rubric', en: 'The Katameros has no ' + def.svc + ' reading for this day.' }];
+    } else {
+      const L = R.liturgy || {};
+      const cut = { pauline: ['THE PAULINE EPISTLE', 'THE CATHOLIC EPISTLE', 'Response'], catholic: ['THE CATHOLIC EPISTLE', 'THE ACTS', 'Catholic Epistle Response'],
+        acts: ['THE ACTS', 'APEKRAN', 'Response'], pg: ['THE TRISAGION', '- THE THREE MAJOR LITANIES', null] }[def.part];
+      rows = (await deaconSlice('dc-liturgy-of-st-basil', cut[0], cut[1])).filter(r => !/^\+\s*The Acts & Sinaxarium/i.test(r.en || ''));
+      if (def.part === 'pg') rows = rows.flatMap(r => /^\(The Psalm\)/.test(r.en || '') ? readingRows('Psalm', L.psalm) : /^\(The Gospel\)/.test(r.en || '') ? readingRows('Gospel', L.gospel) : [r]);
+      else {
+        const k = rows.findIndex((r, i) => i > 0 && r.kind === 'heading' && (r.en || '').trim().startsWith(cut[2]));
+        const label = def.title.en, ins = readingRows(label, L[def.part]);
+        rows.splice(k < 0 ? rows.length : k, 0, ...ins);
+      }
+    }
+    return { id, title: { en: tt(def.title), ar: def.title.ar }, rows: [...head, ...rows] };
+  }
 
   // ------------------------------------------------------------------ columns
   function colText(row, c) {
@@ -303,7 +421,7 @@
     const list = el('div', { class: 'rows' });
     const frag = document.createDocumentFragment();
     for (const r of vis) {
-      const row = el('div', { class: 'row' + (r.kind ? ' ' + r.kind : ''), style: `grid-template-columns:${tpl}`, 'data-i': r._i });
+      const row = el('div', { class: 'row' + (r.kind ? ' ' + r.kind : '') + (r.cls ? ' ' + r.cls : ''), style: `grid-template-columns:${tpl}`, 'data-i': r._i });
       if (r.img) { if (S.slides) row.append(el('div', { class: 'slideimg' }, el('img', { src: r.img, alt: '', loading: 'lazy' }))); else continue; }
       if (r.kind === 'role') { cols.forEach(c => row.append(cellFor(r, c))); frag.append(row); continue; }
       if (r.kind === 'heading') { row.onclick = () => toggleSection(row); }
@@ -340,8 +458,20 @@
     const notes = [];
     if (cols.some(c => ['cop_lat', 'cop_ar', 'ar_lat', 'en_ar'].includes(c))) notes.push(t('phonApprox'));
     if (cols.includes('cop') && rows.some(r => r.cop_img && r.cop_img.length)) notes.push(S.copScan ? t('copticImg') : t('copOcrNote'));
+    if (rows.some(r => r.cls === 'bgref')) notes.push('Scripture taken from the New King James Version®. Copyright © 1982 by Thomas Nelson. Used by permission. All rights reserved. Passages are shown by Bible Gateway.');
     view.replaceChildren(head, container, notes.length ? el('p', { class: 'note' }, notes.join(' ')) : '', pager);
+    linkVerses();
     window.scrollTo(0, 0);
+  }
+  // NKJV pop-ups for reading references (Bible Gateway's reference tool, loaded on demand)
+  function linkVerses() {
+    if (!document.querySelector('.row.bgref')) return;
+    const run = () => { try { window.BGLinks.version = 'NKJV'; window.BGLinks.clickTooltip = true; window.BGLinks.linkVerses(); } catch (e) { /* offline */ } };
+    if (window.BGLinks) return run();
+    if (document.getElementById('bglinks')) return;
+    const sc = document.createElement('script');
+    sc.id = 'bglinks'; sc.src = 'https://www.biblegateway.com/public/link-to-us/tooltips/bglinks.js'; sc.onload = run;
+    document.head.append(sc);
   }
   function toggleSection(hrow) {
     const closed = hrow.classList.toggle('closed');
@@ -422,70 +552,26 @@
       view.replaceChildren(...out); return;
     }
     if (items.length) out.push(el('div', { class: 'list' }, items));
-    else {
-      const c = CopticCal.jdnToCoptic(j);
-      out.push(el('h2', { class: 'ctitle' }, 'Daily Katamaros — ' + c.d + ' ' + (copText(j).split(' ')[1] || '')));
-      const daily = {
-        '3-9': [
-          ['Vespers Psalm','Psalm 32:11, 6','مزمور عشية'],
-          ['Vespers Gospel','Matthew 25:14–23','إنجيل عشية'],
-          ['Matins Psalm','Psalm 112:1–2','مزمور باكر'],
-          ['Matins Gospel','Luke 6:17–23','إنجيل باكر'],
-          ['Pauline Epistle','Romans 4:13–25; 5:1–5','البولس'],
-          ['Catholic Epistle','1 Peter 1:3–12','الكاثوليكون'],
-          ['Acts (Praxis)','Acts 11:15–24','الإبركسيس'],
-          ['Liturgy Psalm','Psalm 19:4; 132:9–10','مزمور القداس'],
-          ['Liturgy Gospel','Matthew 16:13–19','إنجيل القداس']
-        ]
-      };
-      const key = c.m + '-' + c.d;
-      const refs = daily[key];
-      if (refs) {
-        const holder = el('div', { class:'pad', style:'max-width:1100px;margin:auto' });
-        const toggle = el('button', { class:'btn', type:'button' }, 'Slideshow / عرض الشرائح');
-        const list = el('div', { class:'list' });
-        const slides = el('div', { style:'display:none;text-align:center;min-height:260px;padding:25px 12px' });
-        const prev = el('button', { class:'btn', type:'button' }, '← Previous / السابق');
-        const next = el('button', { class:'btn', type:'button' }, 'Next / التالي →');
-        const label = el('div', { style:'font-size:clamp(24px,4vw,40px);margin:25px 0;line-height:1.5' });
-        const count = el('p', { class:'note' });
-        let page = 0, active = false;
-        const render = () => { const v = refs[page]; label.replaceChildren(el('div', {}, v[0] + ' — ' + v[2]), el('div', {style:'margin-top:16px'}, v[1]));count.textContent=(page+1)+' / '+refs.length;prev.disabled=page===0;next.disabled=page===refs.length-1; };
-        prev.onclick=()=>{page=Math.max(0,page-1);render();};
-        next.onclick=()=>{page=Math.min(refs.length-1,page+1);render();};
-        toggle.onclick=()=>{active=!active;slides.style.display=active?'block':'none';list.style.display=active?'none':'block';render();};
-        for (const v of refs) list.append(el('div',{class:'li',style:'display:block'},el('strong',{},v[0]+' — '+v[2]),el('div',{style:'margin-top:8px'},v[1])));
-        slides.append(label,el('div',{style:'display:flex;gap:12px;justify-content:center;flex-wrap:wrap'},prev,next),count);
-        // Fetch a freely redistributable Bible translation and render the
-        // actual passage in the reader. Keep the reference if offline.
-        // Offline-first passages: no third-party Bible API calls.
-        // NKJV-only policy: do not display KJV passages as NKJV.
-        // Complete NKJV passages require an authorised text source.
-        for (const [index, v] of refs.entries()) {
-          const item = list.children[index];
-          const note = el('div', { style:'padding:12px 4px;max-width:960px;line-height:1.8' },
-            'NKJV · ' + v[1] + ' — Full passage text pending an authorised NKJV source.');
-          item.append(note);
-        }
-        holder.append(toggle,list,slides);
-        out.push(holder);
-        out.push(el('p',{class:'note',style:'padding:0 16px'},'NKJV references are displayed. Full NKJV passage text requires publishing authorisation; no KJV text or external Bible API is used.'));
-      } else {
-        out.push(el('p', {class:'note',style:'padding:0 16px'}, 'Daily reading passages are still being indexed for this Coptic date. The uploaded Katamaros is retained as the source; no unverified passages are shown.'));
+    // the day's Katameros readings and Synaxarium, linking to Readings > Vespers / Matins / Liturgy
+    const R = await readingsFor(j);
+    if (!R.pascha) {
+      const fmt = r => r ? r.book + ' ' + r.ref : '—';
+      const line = (label, doc, r) => el('a', { class: 'li', href: '#/doc/' + doc }, el('span', { class: 't' }, label), el('span', { class: 'a', style: 'direction:ltr;font-family:var(--ui);font-size:14px' }, fmt(r)));
+      out.push(el('h2', { class: 'ctitle' }, (R.occasion || R.day?.occasion || t('occReadings'))));
+      if (R.missing) out.push(el('p', { class: 'note', style: 'padding:0 16px' }, (R.missing === 'lent' ? 'Great Lent weekday readings need the Katameros of Great Lent.' : 'Holy Fifty Days weekday readings need the Katameros of the Holy Fifty Days.') + ' It is not in the library yet.'));
+      else {
+        const v = R.vespers || {}, m = R.matins || {}, l = R.liturgy || {};
+        out.push(el('div', { class: 'list' },
+          line('Vespers Psalm', 'rd-v-pg', v.psalm), line('Vespers Gospel', 'rd-v-pg', v.gospel),
+          line('Matins Psalm', 'rd-m-pg', m.psalm), line('Matins Gospel', 'rd-m-pg', m.gospel),
+          line('Pauline Epistle', 'rd-l-pauline', l.pauline), line('Catholic Epistle', 'rd-l-catholic', l.catholic),
+          line('Praxis', 'rd-l-acts', l.acts), line('Liturgy Psalm', 'rd-l-pg', l.psalm), line('Liturgy Gospel', 'rd-l-pg', l.gospel)));
       }
+      const c = CopticCal.jdnToCoptic(j);
+      const syn = (await getJSON('data/synaxarium.json')).days[c.m + '-' + c.d];
+      if (syn) out.push(el('h2', { class: 'ctitle' }, 'Synaxarion'), el('div', { class: 'list' }, syn.titles.map(x => el('a', { class: 'li', href: '#/doc/rd-l-synax' }, el('span', { class: 't' }, x)))));
+      if (R.src) out.push(el('p', { class: 'note', style: 'padding:0 16px' }, R.src));
     }
-    // Inline Coptic Synaxarium, selected by the same Coptic date as the readings.
-    try {
-      const c = CopticCal.jdnToCoptic(j);
-      const syn = await getJSON('../assets/synaxarium-full.json');
-      const entry = syn.entries && syn.entries[c.m + '-' + c.d];
-      if (entry && entry.text) {
-        out.push(el('h2', { class: 'ctitle' }, 'Synaxarium — ' + copText(j)));
-        const article = el('div', { class: 'pad', style: 'white-space:pre-wrap;line-height:1.85;text-align:start;max-width:1000px;margin:auto' });
-        article.textContent = entry.text;
-        out.push(article);
-      }
-    } catch (err) { console.warn('Synaxarium entry unavailable', err); }
     // seasonal texts from the doxologies / responses / hymns
     const kws = SEASON_KEYWORDS[se.key] || [];
     const seasonal = [];
@@ -557,7 +643,7 @@
   async function buildIndex() {
     if (searchIdx) return searchIdx;
     const lib = await library();
-    const files = [...new Set(Object.values(lib.docs).map(m => m.file))];
+    const files = [...new Set(Object.values(lib.docs).filter(m => m.file).map(m => m.file))];
     const idx = [];
     for (const f of files) {
       const d = await getJSON('data/' + f);
