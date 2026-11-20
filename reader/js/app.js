@@ -160,7 +160,7 @@
     const parts = refParts(r);
     return [
       { kind: 'heading', en: r.book + ' ' + r.ref, ar: (AR_BOOK[r.book] || r.book) + ' ' + arNum(r.ref) },
-      { en: parts.join('; ') + ' (NKJV)', cls: 'bgref' },
+      { en: parts.join('; '), cls: 'bgref' },
       { kind: 'rubric', en: 'The scripture passage is displayed below its reference when embedding is permitted by the Bible provider.' },
     ];
   }
@@ -526,9 +526,17 @@
     document.querySelectorAll('.row.bgref').forEach(row => {
       if (row.dataset.scriptureInline) return;
       row.dataset.scriptureInline = '1';
-      const label = (row.textContent || '').replace(/\\s*\\(NKJV\\)\\s*$/, '').trim();
+      // Normalize *every* reading reference before sending it to Bible Gateway.
+      // The old regular expression was double-escaped and left "(NKJV)" in search.
+      const raw = (row.textContent || '').trim();
+      const label = raw
+        .replace(/\\\\s\*\\\\\(NKJV\\\\\)\\\\s\*\$/g, '')
+        .replace(/\\s*\\(\\s*NKJV\\s*\\)/gi, '')
+        .replace(/\\s*[—–-]\\s*NKJV\\b/gi, '')
+        .replace(/\\s+/g, ' ')
+        .trim();
       if (!label) return;
-      row.textContent = label + ' — NKJV';
+      row.textContent = label + ' (NKJV)';
       const section = document.createElement('section');
       section.className = 'scripture-inline';
       section.style.cssText = 'display:block;margin:8px 0 22px;padding:14px;background:#080808;color:#f3d58f;border-left:2px solid #92743b';
@@ -539,7 +547,7 @@
       iframe.title = 'Bible Gateway NKJV passage: ' + label;
       iframe.loading = 'lazy';
       iframe.referrerPolicy = 'no-referrer-when-downgrade';
-      iframe.src = 'https://www.biblegateway.com/passage/?search=' + encodeURIComponent(label);
+      iframe.src = 'https://www.biblegateway.com/passage/?search=' + encodeURIComponent(label) + '&version=NKJV';
       iframe.style.cssText = 'width:100%;height:460px;border:1px solid #554629;background:white;color:black';
       const warning = document.createElement('p');
       warning.textContent = 'If Bible Gateway blocks embedded reading, the passage cannot be displayed here through an iframe. The reference above is still correct; an authorised embeddable Bible source is needed for reliable inline NKJV text.';
