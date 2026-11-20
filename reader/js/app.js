@@ -164,6 +164,37 @@
       { kind: 'rubric', en: 'The scripture passage is displayed below its reference when embedding is permitted by the Bible provider.' },
     ];
   }
+  // Announcements are placed around the daily passage; the original
+  // deacon-book responses remain in their existing order.
+  function readingAnnouncement(part, passage) {
+    if (!passage) return [];
+    const book = passage.book || '';
+    const announcements = {
+      pauline: 'A reading from the Epistle of our teacher Saint Paul the Apostle to the ' + (book === 'Hebrews' ? 'Hebrews' : book.replace(/^([12]) /, '$1 ')) + '. May his blessings be with us all. Amen.',
+      catholic: 'A reading from the Catholic Epistle of ' + book + '. May his blessings be with us all. Amen.',
+      acts: 'A reading from the Acts of our fathers the pure Apostles. May their holy blessings be with us all. Amen.',
+      gospel: 'Stand up in the fear of God and listen to the Holy Gospel according to Saint ' + book + '. May his blessings be with us all. Amen.'
+    };
+    const conclusions = {
+      pauline: 'The grace of God the Father be with you all. Amen.',
+      catholic: 'Do not love the world or the things in the world. The world is passing away, and its desire; but he who does the will of God abides forever. Amen.',
+      acts: 'The word of the Lord shall grow, multiply, be mighty, and be confirmed in the holy Church of God. Amen.',
+      gospel: 'Glory be to God forever. Amen.'
+    };
+    return [
+      { kind: 'heading', en: 'Announcement before the reading' },
+      { kind: 'rubric', en: announcements[part] || ('A reading from ' + book + '.') },
+    ];
+  }
+  function readingConclusion(part) {
+    const texts = {
+      pauline: 'The grace of God the Father be with you all. Amen.',
+      catholic: 'Do not love the world or the things in the world. The world is passing away, and its desire; but he who does the will of God abides forever. Amen.',
+      acts: 'The word of the Lord shall grow, multiply, be mighty, and be confirmed in the holy Church of God. Amen.',
+      gospel: 'Glory be to God forever. Amen.'
+    };
+    return texts[part] ? [{ kind: 'heading', en: 'Conclusion of the reading' }, { kind: 'rubric', en: texts[part] }] : [];
+  }
   async function buildReadingDoc(id) {
     const def = RD[id], j = nowJDN();
     const c = CopticCal.jdnToCoptic(j);
@@ -195,7 +226,8 @@
       if (def.part === 'pg') rows = rows.flatMap(r => /^\(The Psalm\)/.test(r.en || '') ? readingRows('Psalm', L.psalm) : /^\(The Gospel\)/.test(r.en || '') ? readingRows('Gospel', L.gospel) : [r]);
       else {
         const k = rows.findIndex((r, i) => i > 0 && r.kind === 'heading' && (r.en || '').trim().startsWith(cut[2]));
-        const label = def.title.en, ins = readingRows(label, L[def.part]);
+        const label = def.title.en, passage = L[def.part];
+        const ins = [...readingAnnouncement(def.part, passage), ...readingRows(label, passage), ...(passage ? readingConclusion(def.part) : [])];
         rows.splice(k < 0 ? rows.length : k, 0, ...ins);
       }
     }
