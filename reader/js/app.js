@@ -806,7 +806,7 @@
   // ------------------------------------------------------------------ slide show
   let pIdx = 0, pRows = [];
   function presentOpen(startRow = 0, full = true) {
-    pRows = current.rows.filter(r => roleVisible(r) && !(r.kind === 'rubric' && !S.comments) && (r.img || r.kind === 'role' || r.kind === 'heading' || current.cols.some(c => hasCol(r, c))));
+    pRows = current.rows.filter(r => roleVisible(r) && !(r.kind === 'rubric' && (!S.comments || /scripture passage is displayed below its reference/i.test(r.en || ''))) && (r.img || r.kind === 'role' || r.kind === 'heading' || current.cols.some(c => hasCol(r, c))));
     // merge role markers into the following slide
     pIdx = Math.max(0, pRows.findIndex(r => r._i >= startRow));
     $('#present').classList.add('on');
@@ -824,6 +824,24 @@
     if (r.kind === 'role' && pRows[pIdx + 1]) { roleRow = r; }
     if (roleRow) { stage.append(el('div', { class: 'p-role' }, roleLabel(roleRow.role, 'en') + '  ' + roleLabel(roleRow.role, 'cop') + '  ' + roleLabel(roleRow.role, 'ar'))); r = pRows[pIdx + 1]; }
     else if (r._role && r.kind !== 'heading') stage.append(el('div', { class: 'p-role' }, roleLabel(r._role, 'en') + '  ' + roleLabel(r._role, 'cop') + '  ' + roleLabel(r._role, 'ar')));
+    if (r.cls === 'bgref') {
+      // Scripture slides must contain the passage viewer, not a reference-only
+      // slide or the explanatory rubric from the scrolling document.
+      const ref = (r.en || '').replace(/\\s*\\(\\s*NKJV\\s*\\)/gi, '').trim();
+      stage.style.gridTemplateColumns = 'minmax(0,1fr)';
+      const frame = el('iframe', {
+        title: 'Scripture: ' + ref,
+        src: 'https://www.biblegateway.com/passage/?search=' + encodeURIComponent(ref) + '&version=NKJV',
+        loading: 'eager',
+        style: 'width:100%;height:100%;min-height:65vh;max-height:85vh;border:1px solid #6b542a;background:#fff;border-radius:4px;'
+      });
+      const container = el('div', { style: 'grid-column:1/-1;display:flex;flex-direction:column;width:100%;height:80vh;min-height:0;gap:8px;padding:8px 12px;box-sizing:border-box;' },
+        el('div', { style: 'color:#f3d58f;font-size:clamp(16px,2vw,28px);font-weight:bold;text-align:center;' }, ref + ' (NKJV)'),
+        frame);
+      stage.append(container);
+      $('#pCount').textContent = `${pIdx + 1} / ${pRows.length}`;
+      return;
+    }
     if (r.img) stage.append(el('div', { class: 'slideimg', style: 'grid-column:1/-1;text-align:center' }, el('img', { src: r.img, alt: '' })));
     else if (r.kind === 'heading') { const h = el('div', { class: 'p-head' }); cols.forEach(c => { const d = cellFor(r, c); if (d.textContent.trim()) h.append(d); }); stage.append(h); }
     else {
