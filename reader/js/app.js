@@ -160,7 +160,7 @@
     const parts = refParts(r);
     return [
       { kind: 'heading', en: r.book + ' ' + r.ref, ar: (AR_BOOK[r.book] || r.book) + ' ' + arNum(r.ref) },
-      ...parts.map(p => ({ en: p + ' (NKJV)', cls: 'bgref' })),
+      { en: parts.join('; ') + ' (NKJV)', cls: 'bgref' },
       { kind: 'rubric', en: 'The scripture passage is displayed below its reference when embedding is permitted by the Bible provider.' },
     ];
   }
@@ -482,7 +482,7 @@
       iframe.title = 'Bible Gateway NKJV passage: ' + label;
       iframe.loading = 'lazy';
       iframe.referrerPolicy = 'no-referrer-when-downgrade';
-      iframe.src = 'https://www.biblegateway.com/passage/?search=' + encodeURIComponent(label) + '&version=NKJV';
+      iframe.src = 'https://www.biblegateway.com/passage/?search=' + encodeURIComponent(label);
       iframe.style.cssText = 'width:100%;height:460px;border:1px solid #554629;background:white;color:black';
       const warning = document.createElement('p');
       warning.textContent = 'If Bible Gateway blocks embedded reading, the passage cannot be displayed here through an iframe. The reference above is still correct; an authorised embeddable Bible source is needed for reliable inline NKJV text.';
