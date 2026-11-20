@@ -530,10 +530,9 @@
       // The old regular expression was double-escaped and left "(NKJV)" in search.
       const raw = (row.textContent || '').trim();
       const label = raw
-        .replace(/\\\\s\*\\\\\(NKJV\\\\\)\\\\s\*\$/g, '')
-        .replace(/\\s*\\(\\s*NKJV\\s*\\)/gi, '')
-        .replace(/\\s*[—–-]\\s*NKJV\\b/gi, '')
-        .replace(/\\s+/g, ' ')
+        .replace(/\s*\(\s*NKJV\s*\)/gi, '')
+        .replace(/\s*[—–-]\s*NKJV\b/gi, '')
+        .replace(/\s+/g, ' ')
         .trim();
       if (!label) return;
       row.textContent = label + ' (NKJV)';
