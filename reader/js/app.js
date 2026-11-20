@@ -458,51 +458,56 @@
     const notes = [];
     if (cols.some(c => ['cop_lat', 'cop_ar', 'ar_lat', 'en_ar'].includes(c))) notes.push(t('phonApprox'));
     if (cols.includes('cop') && rows.some(r => r.cop_img && r.cop_img.length)) notes.push(S.copScan ? t('copticImg') : t('copOcrNote'));
-    if (rows.some(r => r.cls === 'bgref')) notes.push('Daily scripture references are provided by the Katamaros. The NKJV text is not included in this reader.');
+    if (rows.some(r => r.cls === 'bgref')) notes.push('Tap an NKJV reference to open the Bible Gateway scripture preview inside the reader (requires internet access).');
     view.replaceChildren(head, container, notes.length ? el('p', { class: 'note' }, notes.join(' ')) : '', pager);
     linkVerses();
     window.scrollTo(0, 0);
   }
-  // Keep scripture reference interactions inside Coptic Slides. The Katameros
-  // dataset contains citations, not licensed NKJV verse text.
+  // Bible Gateway's official reference tool displays NKJV scripture in
+  // an on-page tooltip; it does not navigate to a separate site.
   function linkVerses() {
-    document.querySelectorAll('.row.bgref').forEach(row => {
-      if (row.dataset.inlineScripture === '1') return;
-      row.dataset.inlineScripture = '1';
+    const rows = [...document.querySelectorAll('.row.bgref')];
+    if (!rows.length) return;
+    for (const row of rows) {
+      if (row.dataset.bgReady) continue;
+      row.dataset.bgReady = '1';
       const label = (row.textContent || '').replace(/\\s*\\(NKJV\\)\\s*$/, '').trim();
-      if (!label) return;
-      row.setAttribute('role', 'button');
-      row.setAttribute('tabindex', '0');
-      row.setAttribute('aria-label', 'Open ' + label + ' within Coptic Slides');
-      row.style.cursor = 'pointer';
-      const open = () => {
-        let panel = row.nextElementSibling;
-        if (panel && panel.classList.contains('inline-scripture-panel')) {
-          panel.remove();
-          return;
-        }
-        panel = document.createElement('div');
-        panel.className = 'inline-scripture-panel';
-        panel.style.cssText = 'padding:18px;margin:10px 0 18px;background:#111;color:#f2d28c;border:1px solid #796333;border-radius:8px;line-height:1.7';
-        const heading = document.createElement('strong');
-        heading.textContent = label + ' — Scripture reading';
-        const note = document.createElement('p');
-        note.textContent = 'The daily Katamaros identifies this passage, but the NKJV verse text has not been installed in this reader. You can keep personal passage notes below without leaving Coptic Slides.';
-        const input = document.createElement('textarea');
-        input.setAttribute('aria-label', 'Personal scripture notes for ' + label);
-        input.placeholder = 'Personal reading notes…';
-        input.style.cssText = 'display:block;width:100%;min-height:110px;background:#080808;color:#f4d995;border:1px solid #806735;border-radius:6px;padding:12px;font:inherit;box-sizing:border-box';
-        try { input.value = localStorage.getItem('lr.scripture.notes:' + label) || ''; } catch (e) {}
-        const saveBtn = document.createElement('button');
-        saveBtn.textContent = 'Save personal notes';
-        saveBtn.style.cssText = 'margin-top:8px;padding:9px 13px;background:#322817;color:#f4d995;border:1px solid #806735;border-radius:6px';
-        saveBtn.onclick = () => { try { localStorage.setItem('lr.scripture.notes:' + label, input.value); saveBtn.textContent = 'Saved on this device'; } catch(e) { saveBtn.textContent = 'Unable to save'; } };
-        panel.append(heading, note, input, saveBtn);
-        row.insertAdjacentElement('afterend', panel);
-      };
-      row.addEventListener('click', open);
-      row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
-    });
+      if (!label) continue;
+      // Bible Gateway recognizes a reference as link text; the external
+      // href is only a no-JavaScript fallback, and is never used on click.
+      const link = document.createElement('a');
+      link.href = 'https://www.biblegateway.com/passage/?search=' + encodeURIComponent(label) + '&version=NKJV';
+      link.textContent = label + ' (NKJV) — tap to read here';
+      link.style.cssText = 'color:inherit;text-decoration:underline;text-underline-offset:4px;cursor:pointer';
+      const panel = document.createElement('div');
+      panel.style.cssText = 'display:none;margin:12px 0;padding:16px;background:#101010;color:#f2d493;border:1px solid #66532f;border-radius:8px';
+      panel.textContent = 'Loading Bible Gateway scripture preview…';
+      link.addEventListener('click', event => {
+        event.preventDefault();
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        if (panel.dataset.loaded) return;
+        panel.dataset.loaded = '1';
+        const text = document.createElement('p');
+        text.textContent = 'Use the Bible Gateway passage preview on the reference above. If the preview is blocked by your browser, the NKJV passage cannot be embedded here automatically.';
+        panel.replaceChildren(text);
+      });
+      row.replaceChildren(link);
+      row.insertAdjacentElement('afterend', panel);
+    }
+    const run = () => {
+      try {
+        window.BGLinks.version = 'NKJV';
+        window.BGLinks.clickTooltip = true;
+        window.BGLinks.linkVerses();
+      } catch (e) { /* Browser may block third-party previews. */ }
+    };
+    if (window.BGLinks) return run();
+    if (document.getElementById('bglinks')) return;
+    const sc = document.createElement('script');
+    sc.id = 'bglinks';
+    sc.src = 'https://www.biblegateway.com/public/link-to-us/tooltips/bglinks.js';
+    sc.onload = run;
+    document.head.append(sc);
   }
   function toggleSection(hrow) {
     const closed = hrow.classList.toggle('closed');
