@@ -225,10 +225,35 @@
       rows = (await deaconSlice('dc-liturgy-of-st-basil', cut[0], cut[1])).filter(r => !/^\+\s*The Acts & Sinaxarium/i.test(r.en || ''));
       if (def.part === 'pg') rows = rows.flatMap(r => /^\(The Psalm\)/.test(r.en || '') ? readingRows('Psalm', L.psalm) : /^\(The Gospel\)/.test(r.en || '') ? readingRows('Gospel', L.gospel) : [r]);
       else {
-        const k = rows.findIndex((r, i) => i > 0 && r.kind === 'heading' && (r.en || '').trim().startsWith(cut[2]));
         const label = def.title.en, passage = L[def.part];
-        const ins = [...readingAnnouncement(def.part, passage), ...readingRows(label, passage), ...(passage ? readingConclusion(def.part) : [])];
-        rows.splice(k < 0 ? rows.length : k, 0, ...ins);
+        if (def.part === 'pauline') {
+          // The deacon book contains a conditional hierarchal introduction
+          // and an APETJEEK hymn block. Keep both before the actual reading.
+          const bishopStart = rows.findIndex(r => r.kind === 'heading' && /^Introduction in the presence of the Pope/i.test(r.en || ''));
+          const hymnStart = rows.findIndex(r => r.kind === 'heading' && /^APETJEEK/i.test(r.en || ''));
+          const responseStart = rows.findIndex(r => r.kind === 'heading' && /^Response\s*:/i.test(r.en || ''));
+          const intro = rows.slice(0, responseStart < 0 ? rows.length : responseStart);
+          const response = responseStart < 0 ? [] : rows.slice(responseStart, bishopStart < 0 ? rows.length : bishopStart);
+          const bishop = bishopStart < 0 ? [] : rows.slice(bishopStart, hymnStart < 0 ? rows.length : hymnStart);
+          const hymns = hymnStart < 0 ? [] : rows.slice(hymnStart);
+          const showBishop = new URLSearchParams(location.search).get('bishop') === '1';
+          rows = [...intro,
+            ...(showBishop ? bishop : []),
+            ...hymns,
+            ...readingAnnouncement(def.part, passage),
+            ...readingRows(label, passage),
+            ...(passage ? readingConclusion(def.part) : []),
+            ...response];
+        } else if (def.part === 'catholic') {
+          // The source explicitly marks where the Catholic Epistle is read.
+          const at = rows.findIndex(r => /The Catholic Epistle is now read/i.test(r.en || ''));
+          const ins = [...readingAnnouncement(def.part, passage), ...readingRows(label, passage), ...(passage ? readingConclusion(def.part) : [])];
+          rows.splice(at < 0 ? rows.length : at, at < 0 ? 0 : 1, ...ins);
+        } else {
+          const at = rows.findIndex(r => r.kind === 'heading' && /^Response\s*:/i.test(r.en || ''));
+          const ins = [...readingAnnouncement(def.part, passage), ...readingRows(label, passage), ...(passage ? readingConclusion(def.part) : [])];
+          rows.splice(at < 0 ? rows.length : at, 0, ...ins);
+        }
       }
     }
     return { id, title: { en: tt(def.title), ar: def.title.ar }, rows: [...head, ...rows] };
