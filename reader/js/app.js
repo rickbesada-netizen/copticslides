@@ -161,7 +161,7 @@
     return [
       { kind: 'heading', en: r.book + ' ' + r.ref, ar: (AR_BOOK[r.book] || r.book) + ' ' + arNum(r.ref) },
       ...parts.map(p => ({ en: p + ' (NKJV)', cls: 'bgref' })),
-      { kind: 'rubric', en: 'Tap the reference to read the passage in the New King James Version.' },
+      { kind: 'rubric', en: 'The scripture passage is displayed below its reference when embedding is permitted by the Bible provider.' },
     ];
   }
   async function buildReadingDoc(id) {
@@ -458,56 +458,38 @@
     const notes = [];
     if (cols.some(c => ['cop_lat', 'cop_ar', 'ar_lat', 'en_ar'].includes(c))) notes.push(t('phonApprox'));
     if (cols.includes('cop') && rows.some(r => r.cop_img && r.cop_img.length)) notes.push(S.copScan ? t('copticImg') : t('copOcrNote'));
-    if (rows.some(r => r.cls === 'bgref')) notes.push('Tap an NKJV reference to open the Bible Gateway scripture preview inside the reader (requires internet access).');
+    if (rows.some(r => r.cls === 'bgref')) notes.push('NKJV passage panels appear inline. Bible Gateway may restrict embedding on other websites.');
     view.replaceChildren(head, container, notes.length ? el('p', { class: 'note' }, notes.join(' ')) : '', pager);
     linkVerses();
     window.scrollTo(0, 0);
   }
-  // Bible Gateway's official reference tool displays NKJV scripture in
-  // an on-page tooltip; it does not navigate to a separate site.
+  // Scripture stays within the liturgy flow. Bible Gateway can block
+  // third-party framing; never claim that an unavailable passage has loaded.
   function linkVerses() {
-    const rows = [...document.querySelectorAll('.row.bgref')];
-    if (!rows.length) return;
-    for (const row of rows) {
-      if (row.dataset.bgReady) continue;
-      row.dataset.bgReady = '1';
+    document.querySelectorAll('.row.bgref').forEach(row => {
+      if (row.dataset.scriptureInline) return;
+      row.dataset.scriptureInline = '1';
       const label = (row.textContent || '').replace(/\\s*\\(NKJV\\)\\s*$/, '').trim();
-      if (!label) continue;
-      // Bible Gateway recognizes a reference as link text; the external
-      // href is only a no-JavaScript fallback, and is never used on click.
-      const link = document.createElement('a');
-      link.href = 'https://www.biblegateway.com/passage/?search=' + encodeURIComponent(label) + '&version=NKJV';
-      link.textContent = label + ' (NKJV) — tap to read here';
-      link.style.cssText = 'color:inherit;text-decoration:underline;text-underline-offset:4px;cursor:pointer';
-      const panel = document.createElement('div');
-      panel.style.cssText = 'display:none;margin:12px 0;padding:16px;background:#101010;color:#f2d493;border:1px solid #66532f;border-radius:8px';
-      panel.textContent = 'Loading Bible Gateway scripture preview…';
-      link.addEventListener('click', event => {
-        event.preventDefault();
-        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        if (panel.dataset.loaded) return;
-        panel.dataset.loaded = '1';
-        const text = document.createElement('p');
-        text.textContent = 'Use the Bible Gateway passage preview on the reference above. If the preview is blocked by your browser, the NKJV passage cannot be embedded here automatically.';
-        panel.replaceChildren(text);
-      });
-      row.replaceChildren(link);
-      row.insertAdjacentElement('afterend', panel);
-    }
-    const run = () => {
-      try {
-        window.BGLinks.version = 'NKJV';
-        window.BGLinks.clickTooltip = true;
-        window.BGLinks.linkVerses();
-      } catch (e) { /* Browser may block third-party previews. */ }
-    };
-    if (window.BGLinks) return run();
-    if (document.getElementById('bglinks')) return;
-    const sc = document.createElement('script');
-    sc.id = 'bglinks';
-    sc.src = 'https://www.biblegateway.com/public/link-to-us/tooltips/bglinks.js';
-    sc.onload = run;
-    document.head.append(sc);
+      if (!label) return;
+      row.textContent = label + ' — NKJV';
+      const section = document.createElement('section');
+      section.className = 'scripture-inline';
+      section.style.cssText = 'display:block;margin:8px 0 22px;padding:14px;background:#080808;color:#f3d58f;border-left:2px solid #92743b';
+      const title = document.createElement('div');
+      title.textContent = label;
+      title.style.cssText = 'font-size:1.1em;font-weight:bold;margin-bottom:10px';
+      const iframe = document.createElement('iframe');
+      iframe.title = 'Bible Gateway NKJV passage: ' + label;
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'no-referrer-when-downgrade';
+      iframe.src = 'https://www.biblegateway.com/passage/?search=' + encodeURIComponent(label) + '&version=NKJV';
+      iframe.style.cssText = 'width:100%;height:460px;border:1px solid #554629;background:white;color:black';
+      const warning = document.createElement('p');
+      warning.textContent = 'If Bible Gateway blocks embedded reading, the passage cannot be displayed here through an iframe. The reference above is still correct; an authorised embeddable Bible source is needed for reliable inline NKJV text.';
+      warning.style.cssText = 'font-size:0.8em;opacity:.8;margin:8px 0 0';
+      section.append(title, iframe, warning);
+      row.insertAdjacentElement('afterend', section);
+    });
   }
   function toggleSection(hrow) {
     const closed = hrow.classList.toggle('closed');
