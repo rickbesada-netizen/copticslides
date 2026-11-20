@@ -458,20 +458,51 @@
     const notes = [];
     if (cols.some(c => ['cop_lat', 'cop_ar', 'ar_lat', 'en_ar'].includes(c))) notes.push(t('phonApprox'));
     if (cols.includes('cop') && rows.some(r => r.cop_img && r.cop_img.length)) notes.push(S.copScan ? t('copticImg') : t('copOcrNote'));
-    if (rows.some(r => r.cls === 'bgref')) notes.push('Scripture taken from the New King James Version®. Copyright © 1982 by Thomas Nelson. Used by permission. All rights reserved. Passages are shown by Bible Gateway.');
+    if (rows.some(r => r.cls === 'bgref')) notes.push('Daily scripture references are provided by the Katamaros. The NKJV text is not included in this reader.');
     view.replaceChildren(head, container, notes.length ? el('p', { class: 'note' }, notes.join(' ')) : '', pager);
     linkVerses();
     window.scrollTo(0, 0);
   }
-  // NKJV pop-ups for reading references (Bible Gateway's reference tool, loaded on demand)
+  // Keep scripture reference interactions inside Coptic Slides. The Katameros
+  // dataset contains citations, not licensed NKJV verse text.
   function linkVerses() {
-    if (!document.querySelector('.row.bgref')) return;
-    const run = () => { try { window.BGLinks.version = 'NKJV'; window.BGLinks.clickTooltip = true; window.BGLinks.linkVerses(); } catch (e) { /* offline */ } };
-    if (window.BGLinks) return run();
-    if (document.getElementById('bglinks')) return;
-    const sc = document.createElement('script');
-    sc.id = 'bglinks'; sc.src = 'https://www.biblegateway.com/public/link-to-us/tooltips/bglinks.js'; sc.onload = run;
-    document.head.append(sc);
+    document.querySelectorAll('.row.bgref').forEach(row => {
+      if (row.dataset.inlineScripture === '1') return;
+      row.dataset.inlineScripture = '1';
+      const label = (row.textContent || '').replace(/\\s*\\(NKJV\\)\\s*$/, '').trim();
+      if (!label) return;
+      row.setAttribute('role', 'button');
+      row.setAttribute('tabindex', '0');
+      row.setAttribute('aria-label', 'Open ' + label + ' within Coptic Slides');
+      row.style.cursor = 'pointer';
+      const open = () => {
+        let panel = row.nextElementSibling;
+        if (panel && panel.classList.contains('inline-scripture-panel')) {
+          panel.remove();
+          return;
+        }
+        panel = document.createElement('div');
+        panel.className = 'inline-scripture-panel';
+        panel.style.cssText = 'padding:18px;margin:10px 0 18px;background:#111;color:#f2d28c;border:1px solid #796333;border-radius:8px;line-height:1.7';
+        const heading = document.createElement('strong');
+        heading.textContent = label + ' — Scripture reading';
+        const note = document.createElement('p');
+        note.textContent = 'The daily Katamaros identifies this passage, but the NKJV verse text has not been installed in this reader. You can keep personal passage notes below without leaving Coptic Slides.';
+        const input = document.createElement('textarea');
+        input.setAttribute('aria-label', 'Personal scripture notes for ' + label);
+        input.placeholder = 'Personal reading notes…';
+        input.style.cssText = 'display:block;width:100%;min-height:110px;background:#080808;color:#f4d995;border:1px solid #806735;border-radius:6px;padding:12px;font:inherit;box-sizing:border-box';
+        try { input.value = localStorage.getItem('lr.scripture.notes:' + label) || ''; } catch (e) {}
+        const saveBtn = document.createElement('button');
+        saveBtn.textContent = 'Save personal notes';
+        saveBtn.style.cssText = 'margin-top:8px;padding:9px 13px;background:#322817;color:#f4d995;border:1px solid #806735;border-radius:6px';
+        saveBtn.onclick = () => { try { localStorage.setItem('lr.scripture.notes:' + label, input.value); saveBtn.textContent = 'Saved on this device'; } catch(e) { saveBtn.textContent = 'Unable to save'; } };
+        panel.append(heading, note, input, saveBtn);
+        row.insertAdjacentElement('afterend', panel);
+      };
+      row.addEventListener('click', open);
+      row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    });
   }
   function toggleSection(hrow) {
     const closed = hrow.classList.toggle('closed');
