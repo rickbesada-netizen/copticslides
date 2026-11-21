@@ -10,7 +10,7 @@ jobs:
   apk:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -33,3 +33,16 @@ jobs:
           name: CopticSlides-Android-APK
           path: android-app/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+      - name: Verify and prepare downloadable APK
+        run: |
+          test -s android-app/app/build/outputs/apk/debug/app-debug.apk
+          unzip -t android-app/app/build/outputs/apk/debug/app-debug.apk
+          cp android-app/app/build/outputs/apk/debug/app-debug.apk CopticSlides-Android.apk
+      - name: Publish APK as GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "android-build-${{ github.run_number }}" CopticSlides-Android.apk \
+            --title "Coptic Slides Android build ${{ github.run_number }}" \
+            --notes "Installable Android testing APK. Download CopticSlides-Android.apk from Assets. Website content updates automatically; native app changes require installing a new build." \
+            --latest
