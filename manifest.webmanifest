@@ -1,0 +1,18 @@
+{
+  "name": "Coptic Slides — Prayer & Liturgical Library",
+  "short_name": "Coptic Slides",
+  "description": "Coptic Orthodox prayer, readings, liturgy and presentation slides",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#122a30",
+  "icons": [
+    {
+      "src": "/icons/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
