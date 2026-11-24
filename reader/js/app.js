@@ -431,6 +431,13 @@
       }));
       body = el('div', { class: 'plist' }, el('div', { class: 'side' }, el('div', { class: 'art', html: iconOf(n.icon) })), links);
     }
+    if(nid==='praises'){
+      const seasonal=el('section',{class:'libpanel',style:'padding:16px;margin-top:12px'},el('h2',{},'Seasonal Psalis'));
+      for(const name of ['Adam Nativity Paramoun Psali on the Sunday Theotokia','Adam Psali for Thomas Sunday']){
+        seasonal.append(el('div',{style:'padding:12px 0;border-bottom:1px solid #8884'},el('strong',{},name),el('div',{class:'note'},'Prayer text awaiting verified transcription.')));
+      }
+      body=el('div',{},body,seasonal);
+    }
     navPage(masthead(true), navPanel(title, back, body));
   }
 
