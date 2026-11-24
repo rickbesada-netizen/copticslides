@@ -783,6 +783,14 @@
       el('button', { class: 'mv', disabled: i === 0, onclick: () => { [S.order[i - 1], S.order[i]] = [S.order[i], S.order[i - 1]]; refresh(); } }, '↑'),
       el('button', { class: 'mv', disabled: i === S.order.length - 1, onclick: () => { [S.order[i + 1], S.order[i]] = [S.order[i], S.order[i + 1]]; refresh(); } }, '↓'))));
     body.append(langs);
+    const commemorations = ['Holy Cross','Archangel Michael','Archangel Gabriel','Archangel Raphael','St. Joseph the Carpenter','St. John the Baptist','St. Peter and St. Paul','St. John the Evangelist','St. Stephen','St. Mark the Apostle','St. George','St. Mena','St. Demiana','St. Marina','St. Anthony the Great','St. Paul the Hermit','St. Macarius the Great','St. Moses the Strong','St. Bishoy','St. Shenute','St. Athanasius','St. Cyril of Alexandria','St. Mary of Egypt','St. Simon the Tanner','Pope Kyrillos VI','St. Habib Girgis','All Saints'];
+    if (!Array.isArray(S.commemorations)) S.commemorations = [];
+    const commList = el('div', {style:'max-height:280px;overflow:auto'});
+    const filter = el('input',{type:'search',placeholder:'Search saints',style:'width:100%;padding:8px'});
+    const showComms = () => { commList.replaceChildren(...commemorations.filter(n=>n.toLowerCase().includes(filter.value.toLowerCase())).map(n=>chk(n,S.commemorations.includes(n),v=>{S.commemorations=S.commemorations.filter(x=>x!==n);if(v)S.commemorations.push(n);}))); };
+    filter.addEventListener('input',showComms);showComms();
+    body.append(el('div',{class:'sh'},'Annual commemorations'),row('Church intercessors','Save your preferred commemorations on this device. This selection does not yet insert saint-specific hymns into services.',filter,commList));
+
     body.append(row(t('showRoles'), t('rolesHint'), ROLES.map(r => chk(t('role_' + r), S.roles[r], v => S.roles[r] = v))));
     body.append(row(t('layout'), null, seg([['auto', t('lay_auto')], ['side', t('lay_side')], ['stack', t('lay_stack')]], S.layout, v => S.layout = v)));
     body.append(el('div', { class: 'sh' }, t('phonetics')),
