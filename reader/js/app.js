@@ -380,12 +380,22 @@
       const n = lib.nodes[it.node];
       return tileFor({ href: '#/n/' + n.id, title: { en: t('cat_' + n.id), ar: n.title.ar }, icon: n.icon });
     }));
+    const guide = el('details',{class:'libpanel',style:'margin-top:12px;padding:16px'},el('summary',{style:'cursor:pointer;font-weight:bold'},'Liturgical service index'),el('p',{},'Browse traditional service categories. Available texts open in the existing reader; categories without texts are marked unavailable.'));
+    const categories = [['Agpeya','agpeya'],['Midnight Praise and Psalmody','praises|psalmody'],['Raising of Incense','incense|vespers|matins'],['Divine Liturgies','liturgy|liturgies'],['Daily Readings','readings'],['Holy Pascha','pascha'],['Melodies','melodies'],['Antiphonary','antiphonary'],['Baptism','baptism'],['Crowning','crowning'],['Funeral services','funeral'],['Consecrations','consecration'],['Clergy prayers','clergy'],['Lakkan','lakkan'],['Unction of the sick','unction'],['Prostration','prostration'],['Veneration','veneration'],['Bible','bible']];
+    for(const [label,pattern] of categories){
+      const rx=new RegExp(pattern,'i');
+      const matches=lib.home.map(h=>h.node?lib.nodes[h.node]:h).filter(n=>n&&rx.test((n.id||n.special||'')+' '+(n.title?.en||'')));
+      const line=el('div',{style:'padding:8px 0;border-bottom:1px solid #8884'},el('strong',{},label));
+      if(matches.length) for(const n of matches) line.append(el('div',{},el('a',{href:n.special?'#/'+n.special:'#/n/'+n.id},tt(n.title)||label)));
+      else line.append(el('div',{style:'font-size:13px;opacity:.75'},'No verified text available in this category yet.'));
+      guide.append(line);
+    }
     const panel = el('section', { class: 'libpanel' },
       el('div', { class: 'libhead' }, el('h2', {}, t('library')),
         el('button', { class: 'ib', 'aria-label': t('bookmarks'), onclick: openBookmarks, html: '<svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg>' }),
         el('button', { class: 'ib', 'aria-label': t('search'), onclick: () => go('#/search/'), html: '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>' })),
       tiles);
-    navPage(masthead(false), el('div', { class: 'home-grid' }, card, panel));
+    navPage(masthead(false), el('div', { class: 'home-grid' }, card, panel, guide));
   }
   function todayButtons(holy) {
     const wrap = el('div');
