@@ -8945,6 +8945,96 @@
         "en": "Commemoration of the Saints"
       },
       "heads": []
+    },
+    "funeral-section-0": {
+      "file": "pascha/palm.json",
+      "parent": "palm-95",
+      "start": 0,
+      "end": 9,
+      "title": {
+        "en": "General Funeral — introduction"
+      },
+      "heads": []
+    },
+    "funeral-section-9": {
+      "file": "pascha/palm.json",
+      "parent": "palm-95",
+      "start": 9,
+      "end": 17,
+      "title": {
+        "en": "General Funeral — Sixth Hour"
+      },
+      "heads": []
+    },
+    "funeral-section-17": {
+      "file": "pascha/palm.json",
+      "parent": "palm-95",
+      "start": 17,
+      "end": 35,
+      "title": {
+        "en": "General Funeral — readings and prayers"
+      },
+      "heads": []
+    },
+    "lakkan-section-0": {
+      "file": "pascha/thursday.json",
+      "parent": "thursday-303",
+      "start": 0,
+      "end": 17,
+      "title": {
+        "en": "Covenant Thursday — readings and events"
+      },
+      "heads": []
+    },
+    "lakkan-section-17": {
+      "file": "pascha/thursday.json",
+      "parent": "thursday-303",
+      "start": 17,
+      "end": 48,
+      "title": {
+        "en": "Lakkan — opening service"
+      },
+      "heads": []
+    },
+    "lakkan-section-48": {
+      "file": "pascha/thursday.json",
+      "parent": "thursday-303",
+      "start": 48,
+      "end": 55,
+      "title": {
+        "en": "Homily of Abba Shenouti"
+      },
+      "heads": []
+    },
+    "lakkan-section-55": {
+      "file": "pascha/thursday.json",
+      "parent": "thursday-303",
+      "start": 55,
+      "end": 105,
+      "title": {
+        "en": "Pauline and subsequent prayers"
+      },
+      "heads": []
+    },
+    "lakkan-section-105": {
+      "file": "pascha/thursday.json",
+      "parent": "thursday-303",
+      "start": 105,
+      "end": 154,
+      "title": {
+        "en": "Blessing of the Water"
+      },
+      "heads": []
+    },
+    "lakkan-section-154": {
+      "file": "pascha/thursday.json",
+      "parent": "thursday-303",
+      "start": 154,
+      "end": 161,
+      "title": {
+        "en": "Homily of St John Chrysostom"
+      },
+      "heads": []
     }
   },
   "nodes": {
@@ -10297,7 +10387,7 @@
     "unction": {
       "id": "unction",
       "title": {
-        "en": "Unction",
+        "en": "Unction — Last Friday of Lent",
         "ar": "القنديل"
       },
       "icon": "unction",
@@ -10311,7 +10401,7 @@
     "funeral": {
       "id": "funeral",
       "title": {
-        "en": "Funeral",
+        "en": "General Funeral — Palm Sunday",
         "ar": "التجنيز"
       },
       "icon": "funeral",
@@ -10319,6 +10409,15 @@
       "items": [
         {
           "doc": "palm-95"
+        },
+        {
+          "doc": "funeral-section-0"
+        },
+        {
+          "doc": "funeral-section-9"
+        },
+        {
+          "doc": "funeral-section-17"
         }
       ]
     },
@@ -10387,7 +10486,7 @@
     "lakkan": {
       "id": "lakkan",
       "title": {
-        "en": "Lakkan",
+        "en": "Lakkan — Covenant Thursday",
         "ar": "اللقان"
       },
       "icon": "lakkan",
@@ -10395,6 +10494,24 @@
       "items": [
         {
           "doc": "thursday-303"
+        },
+        {
+          "doc": "lakkan-section-0"
+        },
+        {
+          "doc": "lakkan-section-17"
+        },
+        {
+          "doc": "lakkan-section-48"
+        },
+        {
+          "doc": "lakkan-section-55"
+        },
+        {
+          "doc": "lakkan-section-105"
+        },
+        {
+          "doc": "lakkan-section-154"
         }
       ]
     },
