@@ -435,6 +435,27 @@
       }));
       body = el('div', { class: 'plist' }, el('div', { class: 'side' }, el('div', { class: 'art', html: iconOf(n.icon) })), links);
     }
+    if (nid === 'fractions') {
+      const j = nowJDN(), c = CopticCal.jdnToCoptic(j), season = CopticCal.seasonInfo(j), d = CopticCal.season(j).diff;
+      const choices = [];
+      const add = n => { const id = 'fraction-choice-' + n; if (lib.docs[id] && !choices.includes(id)) choices.push(id); };
+      if (d === -7) add(94);
+      else if (d >= 0 && d <= 49) add(99);
+      else if (season.key === 'lent') add(89);
+      else if (season.key === 'apostles-fast' || season.key === 'apostles') add(111);
+      else if (season.key === 'transfiguration') add(117);
+      else if (season.key === 'mary-fast' || season.key === 'assumption') { add(122); add(130); }
+      else if (season.key === 'nayrouz') add(73);
+      else if (season.key === 'nativity-fast' || season.key === 'nativity' || season.key === 'kiahk' || season.key === 'nativity-paramoun') add(79);
+      else if (season.key === 'theophany') { add(82); add(86); }
+      if (c.d === 29 && c.m <= 12) add(66);
+      const panel = el('section', {class:'libpanel',style:'padding:16px;margin-bottom:12px'},
+        el('strong', {}, gregText(j)), el('p', {}, S.ui === 'ar' ? season.ar : season.en),
+        el('h3', {}, S.ui === 'ar' ? 'قسمات مناسبة للمناسبة' : 'Seasonal fraction suggestions'),
+        el('p', {class:'note'}, S.ui === 'ar' ? 'اختيارات مقترحة وليست تحديداً إلزامياً للطقس.' : 'Suggestions only; confirm the applicable rite and feast with the service leader.'),
+        choices.length ? el('div',{class:'links'},choices.map(id=>el('a',{href:'#/doc/'+id},tt(lib.docs[id].title)))) : el('p',{},S.ui === 'ar' ? 'اختر من القائمة الكاملة أدناه.' : 'Choose from the full list below.'));
+      body = el('div', {}, panel, body);
+    }
     if (nid === 'cymbal-variants') {
       const g = CopticCal.jdnToGreg(nowJDN());
       const adam = new Date(g.y, g.m - 1, g.d).getDay() <= 2;
