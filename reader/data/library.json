@@ -8825,6 +8825,126 @@
         "en": "Transfiguration — final verse"
       },
       "heads": []
+    },
+    "gregory-individual-prayers-0": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-gregory",
+      "start": 0,
+      "end": 18,
+      "title": {
+        "en": "Prayer of Reconciliation"
+      },
+      "heads": []
+    },
+    "gregory-individual-prayers-18": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-gregory",
+      "start": 18,
+      "end": 74,
+      "title": {
+        "en": "Heavenly Hymn"
+      },
+      "heads": []
+    },
+    "gregory-individual-prayers-74": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-gregory",
+      "start": 74,
+      "end": 142,
+      "title": {
+        "en": "Anamnesis"
+      },
+      "heads": []
+    },
+    "gregory-individual-prayers-142": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-gregory",
+      "start": 142,
+      "end": 249,
+      "title": {
+        "en": "Litanies"
+      },
+      "heads": []
+    },
+    "gregory-individual-prayers-249": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-gregory",
+      "start": 249,
+      "end": 306,
+      "title": {
+        "en": "Seven Minor Litanies"
+      },
+      "heads": []
+    },
+    "gregory-individual-prayers-306": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-gregory",
+      "start": 306,
+      "end": 337,
+      "title": {
+        "en": "Fraction and Communion"
+      },
+      "heads": []
+    },
+    "cyril-individual-prayers-0": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-cyril",
+      "start": 0,
+      "end": 20,
+      "title": {
+        "en": "Reconciliation — St Severus"
+      },
+      "heads": []
+    },
+    "cyril-individual-prayers-20": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-cyril",
+      "start": 20,
+      "end": 38,
+      "title": {
+        "en": "Reconciliation — St John the Triple Blessed"
+      },
+      "heads": []
+    },
+    "cyril-individual-prayers-38": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-cyril",
+      "start": 38,
+      "end": 77,
+      "title": {
+        "en": "Anaphora"
+      },
+      "heads": []
+    },
+    "cyril-individual-prayers-77": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-cyril",
+      "start": 77,
+      "end": 170,
+      "title": {
+        "en": "Consecration"
+      },
+      "heads": []
+    },
+    "cyril-individual-prayers-170": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-cyril",
+      "start": 170,
+      "end": 299,
+      "title": {
+        "en": "Litanies"
+      },
+      "heads": []
+    },
+    "cyril-individual-prayers-299": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-cyril",
+      "start": 299,
+      "end": 326,
+      "title": {
+        "en": "Commemoration of the Saints"
+      },
+      "heads": []
     }
   },
   "nodes": {
@@ -9631,6 +9751,9 @@
         },
         {
           "doc": "creation-litany-gregory"
+        },
+        {
+          "node": "gregory-individual-prayers"
         }
       ]
     },
@@ -9660,6 +9783,9 @@
         },
         {
           "doc": "creation-litany-cyril"
+        },
+        {
+          "node": "cyril-individual-prayers"
         }
       ]
     },
@@ -10745,6 +10871,64 @@
         },
         {
           "doc": "seasonal-doxology-list-168"
+        }
+      ]
+    },
+    "gregory-individual-prayers": {
+      "id": "gregory-individual-prayers",
+      "title": {
+        "en": "Individual prayer sections",
+        "ar": "أقسام الصلوات"
+      },
+      "icon": "gregory",
+      "view": "list",
+      "items": [
+        {
+          "doc": "gregory-individual-prayers-0"
+        },
+        {
+          "doc": "gregory-individual-prayers-18"
+        },
+        {
+          "doc": "gregory-individual-prayers-74"
+        },
+        {
+          "doc": "gregory-individual-prayers-142"
+        },
+        {
+          "doc": "gregory-individual-prayers-249"
+        },
+        {
+          "doc": "gregory-individual-prayers-306"
+        }
+      ]
+    },
+    "cyril-individual-prayers": {
+      "id": "cyril-individual-prayers",
+      "title": {
+        "en": "Individual prayer sections",
+        "ar": "أقسام الصلوات"
+      },
+      "icon": "cyril",
+      "view": "list",
+      "items": [
+        {
+          "doc": "cyril-individual-prayers-0"
+        },
+        {
+          "doc": "cyril-individual-prayers-20"
+        },
+        {
+          "doc": "cyril-individual-prayers-38"
+        },
+        {
+          "doc": "cyril-individual-prayers-77"
+        },
+        {
+          "doc": "cyril-individual-prayers-170"
+        },
+        {
+          "doc": "cyril-individual-prayers-299"
         }
       ]
     }
