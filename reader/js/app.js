@@ -322,11 +322,16 @@
   const gridTemplate = cols => cols.map(c => c === 'cop' ? 'minmax(0,1.05fr)' : 'minmax(0,1fr)').join(' ');
   function useStack(cols) {
     if (S.layout === 'stack') return true;
-    const w = window.innerWidth;
-    if (w < 600 && cols.length > 1) return true;
-    if (w < 1000 && cols.length > 3) return true;
+    if (cols.length < 2) return false;
+    const width = view.clientWidth;
+    if (width < 600) return true;
     if (S.layout === 'side') return false;
-    return w < 820 && cols.length > 2;
+    // Allow room for the page margins, gutters and about 15 em per language.
+    return width < cols.length * (15 * S.fs + 40);
+  }
+  function refreshColumnLayout() {
+    const reader = view.querySelector('.language-reader');
+    if (reader) reader.classList.toggle('stack', useStack(current.cols));
   }
   // attach the current role to every row, and decide visibility
   function prepareRows(rows) {
@@ -889,7 +894,7 @@
     body.append(el('div', { class: 'sh' }, t('presentMode')), row(t('presentMode'), t('pmHint'), seg([['scroll', t('pm_scroll')], ['slides', t('pm_slides')]], S.mode, v => S.mode = v)));
     body.append(el('div', { class: 'sh' }, t('scrollOpts')),
       row(t('docTheme'), null, seg([['book', t('th_book')], ['night', t('th_night')], ['light', t('th_light')], ['sepia', t('th_sepia')]], S.theme, v => S.theme = v)),
-      row(t('textSize') + ' [' + S.fs + ']', null, el('input', { type: 'range', min: 12, max: 44, value: S.fs, oninput: e => { S.fs = +e.target.value; applyTheme(); save(); e.target.parentNode.firstChild.textContent = t('textSize') + ' [' + S.fs + ']'; } })),
+      row(t('textSize') + ' [' + S.fs + ']', null, el('input', { type: 'range', min: 12, max: 44, value: S.fs, oninput: e => { S.fs = +e.target.value; applyTheme(); refreshColumnLayout(); save(); e.target.parentNode.firstChild.textContent = t('textSize') + ' [' + S.fs + ']'; } })),
       row(t('showComments'), t('commentsHint'), chk(t('showComments'), S.comments, v => S.comments = v)));
     const langs = row(t('showLangs'), S.ui==='ar' ? 'اختر طريقة عرض واحدة لكل لغة.' : 'Choose one display format per language. Phonetic formats replace the original script in the same column.');
     for (const slot of LANGUAGE_SLOTS) {
@@ -1066,8 +1071,7 @@
       } else if (e.key === 'Escape') closeAll();
     });
     window.addEventListener('resize', () => { if ($('#present').classList.contains('on')) presentShow(); });
-    let lastW = window.innerWidth;
-    window.addEventListener('resize', () => { if (Math.abs(window.innerWidth - lastW) > 120 && current.id) { lastW = window.innerWidth; renderDoc(); } });
+    window.addEventListener('resize', refreshColumnLayout);
     window.addEventListener('hashchange', route);
     route();
     if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
