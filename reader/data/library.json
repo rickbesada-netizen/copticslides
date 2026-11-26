@@ -9035,6 +9035,105 @@
         "en": "Homily of St John Chrysostom"
       },
       "heads": []
+    },
+    "unction-prayer-0": {
+      "file": "pascha/last-friday.json",
+      "parent": "last-friday-22",
+      "start": 0,
+      "end": 54,
+      "title": {
+        "en": "First prayer — the sick",
+        "ar": "الصلاة الأولى — المرضى"
+      },
+      "heads": []
+    },
+    "unction-prayer-54": {
+      "file": "pascha/last-friday.json",
+      "parent": "last-friday-22",
+      "start": 54,
+      "end": 71,
+      "title": {
+        "en": "Second prayer — travellers",
+        "ar": "الصلاة الثانية — المسافرون"
+      },
+      "heads": []
+    },
+    "unction-prayer-71": {
+      "file": "pascha/last-friday.json",
+      "parent": "last-friday-22",
+      "start": 71,
+      "end": 94,
+      "title": {
+        "en": "Third prayer — creation",
+        "ar": "الصلاة الثالثة — الخليقة"
+      },
+      "heads": []
+    },
+    "unction-prayer-94": {
+      "file": "pascha/last-friday.json",
+      "parent": "last-friday-22",
+      "start": 94,
+      "end": 113,
+      "title": {
+        "en": "Fourth prayer — authorities",
+        "ar": "الصلاة الرابعة — الرؤساء"
+      },
+      "heads": []
+    },
+    "unction-prayer-113": {
+      "file": "pascha/last-friday.json",
+      "parent": "last-friday-22",
+      "start": 113,
+      "end": 137,
+      "title": {
+        "en": "Fifth prayer — departed",
+        "ar": "الصلاة الخامسة — الراقدون"
+      },
+      "heads": []
+    },
+    "unction-prayer-137": {
+      "file": "pascha/last-friday.json",
+      "parent": "last-friday-22",
+      "start": 137,
+      "end": 157,
+      "title": {
+        "en": "Sixth prayer — oblations",
+        "ar": "الصلاة السادسة — القرابين"
+      },
+      "heads": []
+    },
+    "unction-prayer-157": {
+      "file": "pascha/last-friday.json",
+      "parent": "last-friday-22",
+      "start": 157,
+      "end": 178,
+      "title": {
+        "en": "Seventh prayer — catechumens",
+        "ar": "الصلاة السابعة — الموعوظون"
+      },
+      "heads": []
+    },
+    "unction-prayer-178": {
+      "file": "pascha/last-friday.json",
+      "parent": "last-friday-22",
+      "start": 178,
+      "end": 181,
+      "title": {
+        "en": "Anointing and conclusion",
+        "ar": "المسحة والختام"
+      },
+      "heads": []
+    },
+    "unction-complete-rite": {
+      "file": "pascha/last-friday.json",
+      "parent": "last-friday-22",
+      "start": 0,
+      "end": 181,
+      "title": {
+        "en": "Unction — seven prayers and anointing",
+        "ar": "القنديل — الصلوات السبع والمسحة"
+      },
+      "heads": []
     }
   },
   "nodes": {
@@ -10394,7 +10493,31 @@
       "view": "list",
       "items": [
         {
-          "doc": "last-friday-22"
+          "doc": "unction-complete-rite"
+        },
+        {
+          "doc": "unction-prayer-0"
+        },
+        {
+          "doc": "unction-prayer-54"
+        },
+        {
+          "doc": "unction-prayer-71"
+        },
+        {
+          "doc": "unction-prayer-94"
+        },
+        {
+          "doc": "unction-prayer-113"
+        },
+        {
+          "doc": "unction-prayer-137"
+        },
+        {
+          "doc": "unction-prayer-157"
+        },
+        {
+          "doc": "unction-prayer-178"
         }
       ]
     },
