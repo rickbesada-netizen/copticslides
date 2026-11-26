@@ -288,3 +288,15 @@ main { width: 100%; min-width: 0; }
   .present-stage .cell:empty { display: none; }
   .present-ui { gap: 10px; }
 }
+
+/* Language lanes are physical left-to-right; individual Arabic cells remain RTL. */
+.language-reader, .present-stage { direction:ltr; }
+.language-reader .colhdr, .language-reader .row { direction:ltr; }
+.language-reader .cell.ar, .language-reader .cell.cop_ar, .language-reader .cell.en_ar,
+.present-stage .cell.ar, .present-stage .cell.cop_ar, .present-stage .cell.en_ar { direction:rtl; unicode-bidi:isolate; }
+.language-slot { margin-top:14px; padding-top:12px; border-top:1px solid var(--line); }
+.language-slot .lb { margin-bottom:8px; }
+.language-slot .seg { gap:7px; }
+.language-slot .seg button { border-radius:7px; }
+.language-slot .seg button.on { border-color:var(--accent); background:var(--accent); color:var(--bg); }
+@media(max-width:600px) { .language-slot .seg button { white-space:normal; text-align:start; } }
