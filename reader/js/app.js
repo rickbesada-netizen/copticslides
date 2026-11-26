@@ -305,12 +305,14 @@
     d.textContent = colText(row, c);
     return d;
   }
-  const gridTemplate = cols => cols.map(c => (c === 'cop' ? '1.05fr' : '1fr')).join(' ');
+  const gridTemplate = cols => cols.map(c => c === 'cop' ? 'minmax(0,1.05fr)' : 'minmax(0,1fr)').join(' ');
   function useStack(cols) {
     if (S.layout === 'stack') return true;
-    if (S.layout === 'side') return false;
     const w = window.innerWidth;
-    return (w < 560 && cols.length > 1) || (w < 900 && cols.length > 3);
+    if (w < 600 && cols.length > 1) return true;
+    if (w < 1000 && cols.length > 3) return true;
+    if (S.layout === 'side') return false;
+    return w < 820 && cols.length > 2;
   }
   // attach the current role to every row, and decide visibility
   function prepareRows(rows) {
@@ -591,22 +593,7 @@
       const has = cols.some(c => hasCol(r, c));
       if (has) {
         const cells = cols.map(c => cellFor(r, c));
-        const empty = cells.map(d => !d.textContent.trim() && !d.querySelector('img'));
-        if (!stack && empty.some(Boolean) && empty.some(e => !e)) {
-          let last = -1;
-          const span = cells.map(() => 1);
-          const keep = cells.map(() => false);
-          for (let k = 0; k < cells.length; k++) {
-            if (!empty[k]) { last = k; continue; }
-            // an empty column is taken by the text on its left (keeps every language in its own column)
-            if (last >= 0 && !RTL_COLS.has(cols[last])) span[last]++;
-            else {
-              const right = cells.findIndex((d, j) => j > k && !empty[j]);
-              if (last < 0 || right < 0 || !RTL_COLS.has(cols[right])) keep[k] = true; else span[right]++;
-            }
-          }
-          cells.forEach((d, k) => { if (!empty[k]) { if (span[k] > 1) d.style.gridColumn = 'span ' + span[k]; row.append(d); } else if (keep[k]) row.append(el('div', { class: 'cell ' + cols[k] })); });
-        } else cells.forEach(d => row.append(d));
+        cells.forEach(d => row.append(d));
       } else if (!r.img) continue;
       frag.append(row);
     }
@@ -941,8 +928,10 @@
     stage.replaceChildren();
     let r = pRows[pIdx];
     if (!r) { stage.append(el('div', {class:'p-head'}, 'No visible prayer rows. Expand a section or change display settings.')); $('#pCount').textContent = '0 / 0'; return; }
-    const cols = current.cols;
+    const cols = current.cols.filter(c => hasCol(r,c));
+    if (!cols.length) cols.push(...current.cols);
     stage.style.gridTemplateColumns = gridTemplate(cols);
+    stage.dataset.columns = String(cols.length);
     let roleRow = null;
     if (r.kind === 'role' && pRows[pIdx + 1]) { roleRow = r; }
     if (roleRow) { stage.append(el('div', { class: 'p-role' }, roleLabel(roleRow.role, 'en') + '  ' + roleLabel(roleRow.role, 'cop') + '  ' + roleLabel(roleRow.role, 'ar'))); r = pRows[pIdx + 1]; }
@@ -976,7 +965,7 @@
     fitStage(stage);
   }
   function fitStage(stage) {
-    let size = Math.min(window.innerWidth / (Math.max(1, current.cols.length) * 9), window.innerHeight / 8.5);
+    let size = Math.min(56, stage.clientWidth / (Math.max(1, Number(stage.dataset.columns)||1) * 12), stage.clientHeight / 7);
     const cells = stage.querySelectorAll('.cell');
     for (let k = 0; k < 45; k++) {
       cells.forEach(c => { c.style.fontSize = (c.classList.contains('ar') || c.classList.contains('cop_ar') || c.classList.contains('en_ar') ? size * 1.08 : size) + 'px'; });
