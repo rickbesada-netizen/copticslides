@@ -8325,6 +8325,506 @@
         "ar": "أوشية الخليقة — القداس الكيرلسي"
       },
       "heads": []
+    },
+    "saint-doxologies-2": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 2,
+      "end": 13,
+      "title": {
+        "en": "Virgin Mary — Morning"
+      },
+      "heads": []
+    },
+    "saint-doxologies-13": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 13,
+      "end": 20,
+      "title": {
+        "en": "Virgin Mary — Evening"
+      },
+      "heads": []
+    },
+    "saint-doxologies-20": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 20,
+      "end": 31,
+      "title": {
+        "en": "Heavenly Hosts"
+      },
+      "heads": []
+    },
+    "saint-doxologies-31": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 31,
+      "end": 38,
+      "title": {
+        "en": "St John the Beloved"
+      },
+      "heads": []
+    },
+    "saint-doxologies-38": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 38,
+      "end": 45,
+      "title": {
+        "en": "Apostles"
+      },
+      "heads": []
+    },
+    "saint-doxologies-45": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 45,
+      "end": 52,
+      "title": {
+        "en": "St Mark"
+      },
+      "heads": []
+    },
+    "saint-doxologies-52": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 52,
+      "end": 65,
+      "title": {
+        "en": "St George"
+      },
+      "heads": []
+    },
+    "saint-doxologies-65": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 65,
+      "end": 74,
+      "title": {
+        "en": "St Demiana"
+      },
+      "heads": []
+    },
+    "saint-doxologies-74": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 74,
+      "end": 83,
+      "title": {
+        "en": "St Athanasius"
+      },
+      "heads": []
+    },
+    "saint-doxologies-83": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 83,
+      "end": 88,
+      "title": {
+        "en": "Pope's Commemoration"
+      },
+      "heads": []
+    },
+    "saint-doxologies-88": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 88,
+      "end": 96,
+      "title": {
+        "en": "Pope and Bishop"
+      },
+      "heads": []
+    },
+    "saint-doxologies-97": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 97,
+      "end": 99,
+      "title": {
+        "en": "Archangel Michael — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-99": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 99,
+      "end": 101,
+      "title": {
+        "en": "Archangel Gabriel — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-101": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 101,
+      "end": 104,
+      "title": {
+        "en": "Archangel Raphael — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-104": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 104,
+      "end": 107,
+      "title": {
+        "en": "Archangel Souriel — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-107": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 107,
+      "end": 110,
+      "title": {
+        "en": "Four incorporeal creatures — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-110": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 110,
+      "end": 113,
+      "title": {
+        "en": "Twenty-four priests — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-113": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 113,
+      "end": 116,
+      "title": {
+        "en": "St John the Baptist — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-116": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 116,
+      "end": 119,
+      "title": {
+        "en": "St Peter and St Paul — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-119": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 119,
+      "end": 121,
+      "title": {
+        "en": "Any apostle — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-121": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 121,
+      "end": 123,
+      "title": {
+        "en": "St Stephen — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-123": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 123,
+      "end": 126,
+      "title": {
+        "en": "St Theodore — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-126": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 126,
+      "end": 129,
+      "title": {
+        "en": "St Philopateer Mercurius — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-129": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 129,
+      "end": 132,
+      "title": {
+        "en": "St Marina — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-132": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 132,
+      "end": 135,
+      "title": {
+        "en": "St Anthony and St Pavle — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-135": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 135,
+      "end": 138,
+      "title": {
+        "en": "St Paul the Hermit — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-138": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 138,
+      "end": 141,
+      "title": {
+        "en": "St Shenouda — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-141": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 141,
+      "end": 144,
+      "title": {
+        "en": "St Bishoy and St Paul of Tammouh — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-144": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 144,
+      "end": 147,
+      "title": {
+        "en": "St Maximos and St Domadios — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-147": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 147,
+      "end": 150,
+      "title": {
+        "en": "St Samuel the Confessor — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-150": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 150,
+      "end": 153,
+      "title": {
+        "en": "St Takla Himanot — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-153": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 153,
+      "end": 156,
+      "title": {
+        "en": "St Abraam — final verse"
+      },
+      "heads": []
+    },
+    "saint-doxologies-156": {
+      "file": "deacon.json",
+      "parent": "dc-doxologies",
+      "start": 156,
+      "end": 162,
+      "title": {
+        "en": "Conclusion"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-2": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 2,
+      "end": 12,
+      "title": {
+        "en": "Coptic New Year"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-12": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 12,
+      "end": 32,
+      "title": {
+        "en": "Feast of the Cross"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-32": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 32,
+      "end": 46,
+      "title": {
+        "en": "Kiahk"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-46": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 46,
+      "end": 56,
+      "title": {
+        "en": "Virgin Mary — Kiahk"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-56": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 56,
+      "end": 68,
+      "title": {
+        "en": "Nativity Feast"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-68": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 68,
+      "end": 82,
+      "title": {
+        "en": "Epiphany"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-82": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 82,
+      "end": 90,
+      "title": {
+        "en": "Lent — weekdays"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-90": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 90,
+      "end": 110,
+      "title": {
+        "en": "Lent — Sundays"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-110": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 110,
+      "end": 121,
+      "title": {
+        "en": "Palm Sunday"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-121": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 121,
+      "end": 131,
+      "title": {
+        "en": "Resurrection and Fifty Days"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-131": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 131,
+      "end": 141,
+      "title": {
+        "en": "Resurrection — Archangel Michael"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-141": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 141,
+      "end": 151,
+      "title": {
+        "en": "Ascension"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-151": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 151,
+      "end": 159,
+      "title": {
+        "en": "Pentecost"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-160": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 160,
+      "end": 163,
+      "title": {
+        "en": "Circumcision — final verse"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-163": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 163,
+      "end": 165,
+      "title": {
+        "en": "Jonah's Fast — final verse"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-165": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 165,
+      "end": 168,
+      "title": {
+        "en": "Archangel Michael — final verse"
+      },
+      "heads": []
+    },
+    "seasonal-doxology-list-168": {
+      "file": "deacon.json",
+      "parent": "dc-seasonal-doxologies",
+      "start": 168,
+      "end": 171,
+      "title": {
+        "en": "Transfiguration — final verse"
+      },
+      "heads": []
     }
   },
   "nodes": {
@@ -9201,6 +9701,12 @@
         },
         {
           "node": "creation-litanies"
+        },
+        {
+          "node": "saint-doxologies"
+        },
+        {
+          "node": "seasonal-doxology-list"
         }
       ]
     },
@@ -9239,6 +9745,12 @@
         },
         {
           "node": "creation-litanies"
+        },
+        {
+          "node": "saint-doxologies"
+        },
+        {
+          "node": "seasonal-doxology-list"
         }
       ]
     },
@@ -10061,6 +10573,178 @@
         },
         {
           "doc": "creation-litany-cyril"
+        }
+      ]
+    },
+    "saint-doxologies": {
+      "id": "saint-doxologies",
+      "title": {
+        "en": "Saint and angel doxologies",
+        "ar": "ذكصولوجيات القديسين والملائكة"
+      },
+      "icon": "matins",
+      "view": "list",
+      "items": [
+        {
+          "doc": "saint-doxologies-2"
+        },
+        {
+          "doc": "saint-doxologies-13"
+        },
+        {
+          "doc": "saint-doxologies-20"
+        },
+        {
+          "doc": "saint-doxologies-31"
+        },
+        {
+          "doc": "saint-doxologies-38"
+        },
+        {
+          "doc": "saint-doxologies-45"
+        },
+        {
+          "doc": "saint-doxologies-52"
+        },
+        {
+          "doc": "saint-doxologies-65"
+        },
+        {
+          "doc": "saint-doxologies-74"
+        },
+        {
+          "doc": "saint-doxologies-83"
+        },
+        {
+          "doc": "saint-doxologies-88"
+        },
+        {
+          "doc": "saint-doxologies-97"
+        },
+        {
+          "doc": "saint-doxologies-99"
+        },
+        {
+          "doc": "saint-doxologies-101"
+        },
+        {
+          "doc": "saint-doxologies-104"
+        },
+        {
+          "doc": "saint-doxologies-107"
+        },
+        {
+          "doc": "saint-doxologies-110"
+        },
+        {
+          "doc": "saint-doxologies-113"
+        },
+        {
+          "doc": "saint-doxologies-116"
+        },
+        {
+          "doc": "saint-doxologies-119"
+        },
+        {
+          "doc": "saint-doxologies-121"
+        },
+        {
+          "doc": "saint-doxologies-123"
+        },
+        {
+          "doc": "saint-doxologies-126"
+        },
+        {
+          "doc": "saint-doxologies-129"
+        },
+        {
+          "doc": "saint-doxologies-132"
+        },
+        {
+          "doc": "saint-doxologies-135"
+        },
+        {
+          "doc": "saint-doxologies-138"
+        },
+        {
+          "doc": "saint-doxologies-141"
+        },
+        {
+          "doc": "saint-doxologies-144"
+        },
+        {
+          "doc": "saint-doxologies-147"
+        },
+        {
+          "doc": "saint-doxologies-150"
+        },
+        {
+          "doc": "saint-doxologies-153"
+        },
+        {
+          "doc": "saint-doxologies-156"
+        }
+      ]
+    },
+    "seasonal-doxology-list": {
+      "id": "seasonal-doxology-list",
+      "title": {
+        "en": "Seasonal doxologies",
+        "ar": "الذكصولوجيات الموسمية"
+      },
+      "icon": "matins",
+      "view": "list",
+      "items": [
+        {
+          "doc": "seasonal-doxology-list-2"
+        },
+        {
+          "doc": "seasonal-doxology-list-12"
+        },
+        {
+          "doc": "seasonal-doxology-list-32"
+        },
+        {
+          "doc": "seasonal-doxology-list-46"
+        },
+        {
+          "doc": "seasonal-doxology-list-56"
+        },
+        {
+          "doc": "seasonal-doxology-list-68"
+        },
+        {
+          "doc": "seasonal-doxology-list-82"
+        },
+        {
+          "doc": "seasonal-doxology-list-90"
+        },
+        {
+          "doc": "seasonal-doxology-list-110"
+        },
+        {
+          "doc": "seasonal-doxology-list-121"
+        },
+        {
+          "doc": "seasonal-doxology-list-131"
+        },
+        {
+          "doc": "seasonal-doxology-list-141"
+        },
+        {
+          "doc": "seasonal-doxology-list-151"
+        },
+        {
+          "doc": "seasonal-doxology-list-160"
+        },
+        {
+          "doc": "seasonal-doxology-list-163"
+        },
+        {
+          "doc": "seasonal-doxology-list-165"
+        },
+        {
+          "doc": "seasonal-doxology-list-168"
         }
       ]
     }
