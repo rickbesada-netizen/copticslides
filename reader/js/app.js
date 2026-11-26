@@ -16,11 +16,16 @@
 
   // ------------------------------------------------------------------ settings
   const ALL_COLS = ['en', 'cop', 'ar', 'cop_lat', 'cop_ar', 'ar_lat', 'en_ar'];
+  const LANGUAGE_SLOTS = [
+    { key:'english', options:['en','en_ar','off'], label:'Left — English', ar:'العمود الأيسر — الإنجليزية' },
+    { key:'coptic', options:['cop','cop_lat','cop_ar','off'], label:'Middle — Coptic', ar:'العمود الأوسط — القبطية' },
+    { key:'arabic', options:['ar','ar_lat','off'], label:'Right — Arabic', ar:'العمود الأيمن — العربية' }
+  ];
   const RTL_COLS = new Set(['ar', 'cop_ar', 'en_ar']);
   const ROLES = ['PRIEST', 'DEACON', 'PEOPLE', 'READER', 'ALL', 'BISHOP'];
   const DEFAULTS = {
     ui: (navigator.language || 'en').slice(0, 2) === 'ar' ? 'ar' : 'en', theme: 'book', mode: 'scroll', fs: 20, layout: 'auto',
-    order: ALL_COLS.slice(), on: { en: true, cop: true, ar: true }, roles: { PRIEST: true, DEACON: true, PEOPLE: true, READER: true, ALL: true, BISHOP: true },
+    languageSlots: { english:'en', coptic:'cop', arabic:'ar' }, roles: { PRIEST: true, DEACON: true, PEOPLE: true, READER: true, ALL: true, BISHOP: true },
     comments: true, bookPhon: true, copScan: true, slides: true, dayStart: 0, fixedJdn: null
   };
   let S;
@@ -28,7 +33,18 @@
     let saved = {};
     try { saved = JSON.parse(localStorage.getItem('lr.settings') || '{}'); } catch (e) { /* storage unavailable */ }
     S = Object.assign(JSON.parse(JSON.stringify(DEFAULTS)), saved);
-    if (!Array.isArray(S.order) || S.order.length !== ALL_COLS.length) S.order = ALL_COLS.slice();
+    S.languageSlots = { ...DEFAULTS.languageSlots, ...(saved.languageSlots || {}) };
+    if (!saved.languageSlots && saved.on) {
+      for (const slot of LANGUAGE_SLOTS) {
+        const variants = slot.options.slice(0,-1);
+        // A previously enabled transliteration replaces its native script.
+        const selected = variants.slice(1).find(c=>saved.on[c]) || (saved.on[variants[0]] ? variants[0] : null);
+        S.languageSlots[slot.key] = selected || 'off';
+      }
+    }
+    for (const slot of LANGUAGE_SLOTS) if (!slot.options.includes(S.languageSlots[slot.key])) S.languageSlots[slot.key] = slot.options[0];
+    if (LANGUAGE_SLOTS.every(slot=>S.languageSlots[slot.key]==='off')) S.languageSlots.english='en';
+    save();
     S.roles = Object.assign({}, DEFAULTS.roles, S.roles);
     if (!['book', 'night', 'light', 'sepia'].includes(S.theme)) S.theme = 'book';
   }
@@ -286,9 +302,7 @@
   }
   const hasCol = (r, c) => (c === 'cop' && r.cop_img && r.cop_img.length) || !!colText(r, c);
   function activeCols(rows) {
-    const on = S.order.filter(c => S.on[c]);
-    const cols = on.filter(c => rows.some(r => r.kind !== 'role' && hasCol(r, c)));
-    return cols.length ? cols : ['en'];
+    return LANGUAGE_SLOTS.map(slot=>S.languageSlots[slot.key]).filter(c=>c!=='off');
   }
   function roleLabel(role, c) {
     if (c === 'cop') return I18N.cop_roles[role] || '';
@@ -598,7 +612,7 @@
       frag.append(row);
     }
     list.append(frag);
-    const container = el('div', { class: stack ? 'stack' : '' }, hdr, list);
+    const container = el('div', { class: 'language-reader' + (stack ? ' stack' : ''), dir:'ltr' }, hdr, list);
     const order = nodeDocs(current.node);
     const k = order.indexOf(current.id);
     const prev = order[k - 1], next = order[k + 1];
@@ -606,6 +620,7 @@
       prev ? el('a', { href: '#/doc/' + prev }, el('small', {}, '‹ ' + t('prev')), tt(LIB.docs[prev].title)) : el('span'),
       next ? el('a', { class: 'nx', href: '#/doc/' + next }, el('small', {}, t('next') + ' ›'), tt(LIB.docs[next].title)) : el('span'));
     const notes = [];
+    for (const c of cols) if (!rows.some(r=>r.kind!=='role'&&hasCol(r,c))) notes.push(t('col_'+c)+': text unavailable in this document.');
     if (cols.some(c => ['cop_lat', 'cop_ar', 'ar_lat', 'en_ar'].includes(c))) notes.push(t('phonApprox'));
     if (cols.includes('cop') && rows.some(r => r.cop_img && r.cop_img.length)) notes.push(S.copScan ? t('copticImg') : t('copOcrNote'));
     if (rows.some(r => r.cls === 'bgref')) notes.push('NKJV passage panels appear inline. Bible Gateway may restrict embedding on other websites.');
@@ -876,10 +891,16 @@
       row(t('docTheme'), null, seg([['book', t('th_book')], ['night', t('th_night')], ['light', t('th_light')], ['sepia', t('th_sepia')]], S.theme, v => S.theme = v)),
       row(t('textSize') + ' [' + S.fs + ']', null, el('input', { type: 'range', min: 12, max: 44, value: S.fs, oninput: e => { S.fs = +e.target.value; applyTheme(); save(); e.target.parentNode.firstChild.textContent = t('textSize') + ' [' + S.fs + ']'; } })),
       row(t('showComments'), t('commentsHint'), chk(t('showComments'), S.comments, v => S.comments = v)));
-    const langs = row(t('showLangs'), t('langsHint'));
-    S.order.forEach((c, i) => langs.append(el('div', { class: 'colopt' }, chk(t('col_' + c), S.on[c], v => S.on[c] = v),
-      el('button', { class: 'mv', disabled: i === 0, onclick: () => { [S.order[i - 1], S.order[i]] = [S.order[i], S.order[i - 1]]; refresh(); } }, '↑'),
-      el('button', { class: 'mv', disabled: i === S.order.length - 1, onclick: () => { [S.order[i + 1], S.order[i]] = [S.order[i], S.order[i + 1]]; refresh(); } }, '↓'))));
+    const langs = row(t('showLangs'), S.ui==='ar' ? 'اختر طريقة عرض واحدة لكل لغة.' : 'Choose one display format per language. Phonetic formats replace the original script in the same column.');
+    for (const slot of LANGUAGE_SLOTS) {
+      langs.append(el('div',{class:'language-slot'},
+        el('div',{class:'lb'}, S.ui==='ar' ? slot.ar : slot.label),
+        seg(slot.options.map(c=>[c,c==='off'?(S.ui==='ar'?'إخفاء':'Hide'):t('col_'+c)]),S.languageSlots[slot.key],v=>{
+          S.languageSlots[slot.key]=v;
+          if(LANGUAGE_SLOTS.every(x=>S.languageSlots[x.key]==='off')) S.languageSlots.english='en';
+        })
+      ));
+    }
     body.append(langs);
     const commemorations = ['Holy Cross','Archangel Michael','Archangel Gabriel','Archangel Raphael','St. Joseph the Carpenter','St. John the Baptist','St. Peter and St. Paul','St. John the Evangelist','St. Stephen','St. Mark the Apostle','St. George','St. Mena','St. Demiana','St. Marina','St. Anthony the Great','St. Paul the Hermit','St. Macarius the Great','St. Moses the Strong','St. Bishoy','St. Shenute','St. Athanasius','St. Cyril of Alexandria','St. Mary of Egypt','St. Simon the Tanner','Pope Kyrillos VI','St. Habib Girgis','All Saints'];
     if (!Array.isArray(S.commemorations)) S.commemorations = [];
@@ -928,8 +949,7 @@
     stage.replaceChildren();
     let r = pRows[pIdx];
     if (!r) { stage.append(el('div', {class:'p-head'}, 'No visible prayer rows. Expand a section or change display settings.')); $('#pCount').textContent = '0 / 0'; return; }
-    const cols = current.cols.filter(c => hasCol(r,c));
-    if (!cols.length) cols.push(...current.cols);
+    const cols = current.cols.slice();
     stage.style.gridTemplateColumns = gridTemplate(cols);
     stage.dataset.columns = String(cols.length);
     let roleRow = null;
