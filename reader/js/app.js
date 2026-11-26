@@ -435,6 +435,13 @@
       }));
       body = el('div', { class: 'plist' }, el('div', { class: 'side' }, el('div', { class: 'art', html: iconOf(n.icon) })), links);
     }
+    if (nid === 'seasonal-doxology-list') {
+      const j = nowJDN(), g = CopticCal.jdnToGreg(j), se = CopticCal.seasonInfo(j), d = CopticCal.season(j).diff;
+      const map = {'nayrouz':[2], 'cross':[12], 'kiahk':[32,46], 'nativity':[56], 'theophany':[68], 'lent':[new Date(g.y,g.m-1,g.d).getDay()===0?90:82], 'jonah':[163], 'circumcision':[160], 'transfiguration':[168]};
+      const picks = d===-7?[110]:d===39?[141]:d===49?[151]:d>=0&&d<50?[121,131]:(map[se.key]||[]);
+      const links = picks.map(n=>'seasonal-doxology-list-'+n).filter(id=>lib.docs[id]).map(id=>el('a',{href:'#/doc/'+id},tt(lib.docs[id].title)));
+      body = el('div',{},el('section',{class:'libpanel',style:'padding:16px;margin-bottom:12px'},el('strong',{},gregText(j)),el('p',{},S.ui==='ar'?se.ar:se.en),el('h3',{},S.ui==='ar'?'اقتراحات موسمية':'Seasonal suggestions'),links.length?el('div',{class:'links'},links):el('p',{},S.ui==='ar'?'اختر من القائمة أدناه.':'Choose from the full list below.')),body);
+    }
     if (nid === 'creation-litanies') {
       const j = nowJDN(), c = CopticCal.jdnToCoptic(j);
       const md = c.m * 100 + c.d;
