@@ -512,7 +512,14 @@
       const row = el('div', { class: 'row' + (r.kind ? ' ' + r.kind : '') + (r.cls ? ' ' + r.cls : ''), style: `grid-template-columns:${tpl}`, 'data-i': r._i });
       if (r.img) { if (S.slides) row.append(el('div', { class: 'slideimg' }, el('img', { src: r.img, alt: '', loading: 'lazy' }))); else continue; }
       if (r.kind === 'role') { cols.forEach(c => row.append(cellFor(r, c))); frag.append(row); continue; }
-      if (r.kind === 'heading') { row.onclick = () => toggleSection(row); }
+      if (r.kind === 'heading') {
+        row.setAttribute('role', 'button');
+        row.setAttribute('tabindex', '0');
+        row.setAttribute('aria-expanded', 'true');
+        row.title = S.ui === 'ar' ? 'اضغط للطي أو التوسيع' : 'Tap to collapse or expand this prayer';
+        row.onclick = () => toggleSection(row);
+        row.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSection(row); } };
+      }
       const has = cols.some(c => hasCol(r, c));
       if (has) {
         const cells = cols.map(c => cellFor(r, c));
@@ -549,6 +556,10 @@
     if (rows.some(r => r.cls === 'bgref')) notes.push('NKJV passage panels appear inline. Bible Gateway may restrict embedding on other websites.');
     view.replaceChildren(head, container, notes.length ? el('p', { class: 'note' }, notes.join(' ')) : '', pager);
     linkVerses();
+    for (const h of list.querySelectorAll('.row.heading')) {
+      const r = rows.find(x => String(x._i) === h.dataset.i);
+      if (r && /^(?:\\*\\*\\s*)?(?:if a pope, metropolitan or bishop is present|introduction in the presence of the pope, metropolitan or bishop|\\[optional\\])/i.test((r.en || '').trim())) toggleSection(h);
+    }
     window.scrollTo(0, 0);
   }
   // Scripture stays within the liturgy flow. Bible Gateway can block
@@ -588,6 +599,7 @@
   }
   function toggleSection(hrow) {
     const closed = hrow.classList.toggle('closed');
+    hrow.setAttribute('aria-expanded', String(!closed));
     let n = hrow.nextElementSibling;
     while (n && !n.classList.contains('heading')) { n.classList.toggle('collapsed', closed); n = n.nextElementSibling; }
   }
