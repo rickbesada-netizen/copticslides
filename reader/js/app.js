@@ -435,6 +435,16 @@
       }));
       body = el('div', { class: 'plist' }, el('div', { class: 'side' }, el('div', { class: 'art', html: iconOf(n.icon) })), links);
     }
+    if (nid === 'saint-doxologies') {
+      const map = {'Archangel Michael':97,'Archangel Gabriel':99,'Archangel Raphael':101,'St. John the Baptist':113,'St. Peter and St. Paul':116,'St. John the Evangelist':31,'St. Stephen':121,'St. Mark the Apostle':45,'St. George':52,'St. Demiana':65,'St. Marina':129,'St. Paul the Hermit':135,'St. Athanasius':74,'St. Shenute':138};
+      const selected = Array.isArray(S.commemorations) ? S.commemorations : [];
+      const available = selected.filter(n=>map[n] && lib.docs['saint-doxologies-'+map[n]]);
+      const missing = selected.filter(n=>!available.includes(n));
+      const panel = el('section',{class:'libpanel',style:'padding:16px;margin-bottom:12px'},el('h3',{},S.ui==='ar'?'تذكارات كنيستك':'Your church commemorations'),
+        available.length?el('div',{class:'links'},available.map(n=>el('a',{href:'#/doc/saint-doxologies-'+map[n]},tt(lib.docs['saint-doxologies-'+map[n]].title)))):el('p',{},'Select church intercessors in Settings to see available prayers here.'),
+        missing.length?el('p',{class:'note'},'No individual verified text linked for: '+missing.join(', ')):null);
+      body=el('div',{},panel,body);
+    }
     if (nid === 'seasonal-doxology-list') {
       const j = nowJDN(), g = CopticCal.jdnToGreg(j), se = CopticCal.seasonInfo(j), d = CopticCal.season(j).diff;
       const map = {'nayrouz':[2], 'cross':[12], 'kiahk':[32,46], 'nativity':[56], 'theophany':[68], 'lent':[new Date(g.y,g.m-1,g.d).getDay()===0?90:82], 'jonah':[163], 'circumcision':[160], 'transfiguration':[168]};
@@ -872,7 +882,7 @@
     const filter = el('input',{type:'search',placeholder:'Search saints',style:'width:100%;padding:8px'});
     const showComms = () => { commList.replaceChildren(...commemorations.filter(n=>n.toLowerCase().includes(filter.value.toLowerCase())).map(n=>chk(n,S.commemorations.includes(n),v=>{S.commemorations=S.commemorations.filter(x=>x!==n);if(v)S.commemorations.push(n);}))); };
     filter.addEventListener('input',showComms);showComms();
-    body.append(el('div',{class:'sh'},'Annual commemorations'),row('Church intercessors','Save your preferred commemorations on this device. This selection does not yet insert saint-specific hymns into services.',filter,commList));
+    body.append(el('div',{class:'sh'},'Annual commemorations'),row('Church intercessors','Save your preferred commemorations on this device. Available prayers appear in Saint and angel doxologies; they are not automatically inserted into services.',filter,commList));
 
     body.append(row(t('showRoles'), t('rolesHint'), ROLES.map(r => chk(t('role_' + r), S.roles[r], v => S.roles[r] = v))));
     body.append(row(t('layout'), null, seg([['auto', t('lay_auto')], ['side', t('lay_side')], ['stack', t('lay_stack')]], S.layout, v => S.layout = v)));
