@@ -1,0 +1,80 @@
+{
+  "sections": [
+    {
+      "id": "baptism-source-boy",
+      "title": {
+        "en": "Absolution of the Woman — Boy",
+        "ar": "تحليل المرأة إذا ولدت ذكرا"
+      },
+      "rows": [
+        {
+          "kind": "heading",
+          "en": "Absolution of the Woman — Boy",
+          "ar": "تحليل المرأة إذا ولدت ذكرا"
+        },
+        {
+          "kind": "rubric",
+          "en": "Source: Rites of the Holy Baptism, Fr. Jacob Nadian, pages 5–33. Full prayer text not yet imported.",
+          "ar": "المصدر: طقس صلاة المعمودية المقدسة، الصفحات 5–33."
+        }
+      ]
+    },
+    {
+      "id": "baptism-source-girl",
+      "title": {
+        "en": "Absolution of the Woman — Girl",
+        "ar": "تحليل المرأة إذا ولدت أنثى"
+      },
+      "rows": [
+        {
+          "kind": "heading",
+          "en": "Absolution of the Woman — Girl",
+          "ar": "تحليل المرأة إذا ولدت أنثى"
+        },
+        {
+          "kind": "rubric",
+          "en": "Source: Rites of the Holy Baptism, Fr. Jacob Nadian, pages 34–60. Full prayer text not yet imported.",
+          "ar": "المصدر: طقس صلاة المعمودية المقدسة، الصفحات 34–60."
+        }
+      ]
+    },
+    {
+      "id": "baptism-source-rite",
+      "title": {
+        "en": "Order of Holy Baptism",
+        "ar": "طقس المعمودية المقدسة"
+      },
+      "rows": [
+        {
+          "kind": "heading",
+          "en": "Order of Holy Baptism",
+          "ar": "طقس المعمودية المقدسة"
+        },
+        {
+          "kind": "rubric",
+          "en": "Source: Rites of the Holy Baptism, Fr. Jacob Nadian, pages 61–131. Full prayer text not yet imported.",
+          "ar": "المصدر: طقس صلاة المعمودية المقدسة، الصفحات 61–131."
+        }
+      ]
+    },
+    {
+      "id": "baptism-source-myron",
+      "title": {
+        "en": "Anointing with Holy Myron",
+        "ar": "المسحة بالميرون المقدس"
+      },
+      "rows": [
+        {
+          "kind": "heading",
+          "en": "Anointing with Holy Myron",
+          "ar": "المسحة بالميرون المقدس"
+        },
+        {
+          "kind": "rubric",
+          "en": "Source: Rites of the Holy Baptism, Fr. Jacob Nadian, pages 132–138. Full prayer text not yet imported.",
+          "ar": "المصدر: طقس صلاة المعمودية المقدسة، الصفحات 132–138."
+        }
+      ]
+    }
+  ]
+}
