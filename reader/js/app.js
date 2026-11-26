@@ -387,7 +387,14 @@
     const categories = [['Agpeya','agpeya'],['Midnight Praise and Psalmody','praises|psalmody'],['Raising of Incense','incense|vespers|matins'],['Divine Liturgies','liturgy|liturgies'],['Daily Readings','readings'],['Holy Pascha','pascha'],['Melodies','melodies'],['Antiphonary','antiphonary'],['Baptism','baptism'],['Crowning','crowning'],['Funeral services','funeral'],['Consecrations','consecration'],['Clergy prayers','clergy'],['Lakkan','lakkan'],['Unction of the sick','unction'],['Prostration','prostration'],['Veneration','veneration'],['Bible','bible']];
     for(const [label,pattern] of categories){
       const rx=new RegExp(pattern,'i');
-      const matches=lib.home.map(h=>h.node?lib.nodes[h.node]:h).filter(n=>n&&rx.test((n.id||n.special||'')+' '+(n.title?.en||'')));
+      const candidates = [...lib.home.map(h=>h.node?lib.nodes[h.node]:h), ...Object.values(lib.nodes)];
+      const seen = new Set();
+      const matches = candidates.filter(n=>{
+        if (!n || !rx.test((n.id||n.special||'')+' '+(n.title?.en||''))) return false;
+        const key=n.id||n.special;
+        if(seen.has(key))return false;
+        seen.add(key);return true;
+      });
       const line=el('div',{style:'padding:8px 0;border-bottom:1px solid #8884'},el('strong',{},label));
       if(matches.length) for(const n of matches) line.append(el('div',{},el('a',{href:n.special?'#/'+n.special:'#/n/'+n.id},tt(n.title)||label)));
       else line.append(el('div',{style:'font-size:13px;opacity:.75'},'No verified text available in this category yet.'));
