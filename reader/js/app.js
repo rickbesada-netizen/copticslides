@@ -425,11 +425,25 @@
     } else {
       const links = el('div', { class: 'links' }, n.items.map(it => {
         const info = itemInfo(it);
-        const isToday = info.holy && holy && info.holy === holy;
+        const g = CopticCal.jdnToGreg(nowJDN());
+        const weekday = new Date(g.y, g.m - 1, g.d).getDay();
+        const adam = weekday <= 2;
+        const recommended = nid === 'cymbal-variants' && it.doc === (adam ? 'cymbal-variants-35' : 'cymbal-variants-32');
+        const isToday = recommended || (info.holy && holy && info.holy === holy);
         return el('a', { href: info.href }, tt(info.title), isToday ? el('span', { class: 'tagt' }, t('today')) : null,
           null);
       }));
       body = el('div', { class: 'plist' }, el('div', { class: 'side' }, el('div', { class: 'art', html: iconOf(n.icon) })), links);
+    }
+    if (nid === 'cymbal-variants') {
+      const g = CopticCal.jdnToGreg(nowJDN());
+      const adam = new Date(g.y, g.m - 1, g.d).getDay() <= 2;
+      const intro = adam ? 'cymbal-variants-35' : 'cymbal-variants-32';
+      body = el('div', {}, el('section', {class:'libpanel',style:'padding:16px;margin-bottom:12px'},
+        el('strong', {}, gregText(nowJDN())),
+        el('p', {}, S.ui === 'ar' ? (adam ? 'اللحن الآدمي' : 'اللحن الواطس') : (adam ? 'Adam introduction for selected day' : 'Watos introduction for selected day')),
+        el('a', {href:'#/doc/'+intro}, S.ui === 'ar' ? 'افتح المقدمة' : 'Open recommended introduction'),
+        el('p', {}, el('a', {href:'#/doc/cymbal-variants-40'}, S.ui === 'ar' ? 'التكملة المشتركة' : 'Open common continuation'))), body);
     }
     if(nid==='praises'){
       const seasonal=el('section',{class:'libpanel',style:'padding:16px;margin-top:12px'},el('h2',{},'Seasonal Psalis'));
