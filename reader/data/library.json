@@ -8281,6 +8281,50 @@
         "ar": "أبيتك"
       },
       "heads": []
+    },
+    "creation-litany-incense": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 269,
+      "end": 280,
+      "title": {
+        "en": "Litany of creation — Offering of Incense",
+        "ar": "أوشية الخليقة — رفع البخور"
+      },
+      "heads": []
+    },
+    "creation-litany-basil": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-basil",
+      "start": 461,
+      "end": 471,
+      "title": {
+        "en": "Litany of creation — St Basil",
+        "ar": "أوشية الخليقة — القداس الباسيلي"
+      },
+      "heads": []
+    },
+    "creation-litany-gregory": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-gregory",
+      "start": 238,
+      "end": 249,
+      "title": {
+        "en": "Litany of creation — St Gregory",
+        "ar": "أوشية الخليقة — القداس الغريغوري"
+      },
+      "heads": []
+    },
+    "creation-litany-cyril": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-cyril",
+      "start": 276,
+      "end": 287,
+      "title": {
+        "en": "Litany of creation — St Cyril",
+        "ar": "أوشية الخليقة — القداس الكيرلسي"
+      },
+      "heads": []
     }
   },
   "nodes": {
@@ -9055,6 +9099,9 @@
         },
         {
           "node": "basil-reading-sections"
+        },
+        {
+          "doc": "creation-litany-basil"
         }
       ]
     },
@@ -9081,6 +9128,9 @@
         },
         {
           "doc": "dc-liturgy-of-st-gregory@dist"
+        },
+        {
+          "doc": "creation-litany-gregory"
         }
       ]
     },
@@ -9107,6 +9157,9 @@
         },
         {
           "doc": "dc-liturgy-of-st-cyril@commemoration"
+        },
+        {
+          "doc": "creation-litany-cyril"
         }
       ]
     },
@@ -9145,6 +9198,9 @@
         },
         {
           "node": "incense-prayer-sections"
+        },
+        {
+          "node": "creation-litanies"
         }
       ]
     },
@@ -9180,6 +9236,9 @@
         },
         {
           "node": "incense-prayer-sections"
+        },
+        {
+          "node": "creation-litanies"
         }
       ]
     },
@@ -9324,6 +9383,9 @@
         },
         {
           "node": "feast-liturgies"
+        },
+        {
+          "node": "creation-litanies"
         }
       ]
     },
@@ -9976,6 +10038,29 @@
         },
         {
           "doc": "pauline-variants-117"
+        }
+      ]
+    },
+    "creation-litanies": {
+      "id": "creation-litanies",
+      "title": {
+        "en": "Waters, seeds, herbs and fruits",
+        "ar": "المياه والزروع والعشب والثمار"
+      },
+      "icon": "matins",
+      "view": "list",
+      "items": [
+        {
+          "doc": "creation-litany-incense"
+        },
+        {
+          "doc": "creation-litany-basil"
+        },
+        {
+          "doc": "creation-litany-gregory"
+        },
+        {
+          "doc": "creation-litany-cyril"
         }
       ]
     }
