@@ -907,7 +907,8 @@
   // ------------------------------------------------------------------ slide show
   let pIdx = 0, pRows = [];
   function presentOpen(startRow = 0, full = true) {
-    pRows = current.rows.filter(r => roleVisible(r) && !(r.kind === 'rubric' && (!S.comments || /scripture passage is displayed below its reference/i.test(r.en || ''))) && (r.img || r.kind === 'role' || r.kind === 'heading' || current.cols.some(c => hasCol(r, c))));
+    const collapsed = new Set(Array.from(view.querySelectorAll('.row.collapsed, .row.heading.closed'), n => Number(n.dataset.i)));
+    pRows = current.rows.filter(r => !collapsed.has(r._i) && roleVisible(r) && !(r.kind === 'rubric' && (!S.comments || /scripture passage is displayed below its reference/i.test(r.en || ''))) && (r.img || r.kind === 'role' || r.kind === 'heading' || current.cols.some(c => hasCol(r, c))));
     // merge role markers into the following slide
     pIdx = Math.max(0, pRows.findIndex(r => r._i >= startRow));
     $('#present').classList.add('on');
