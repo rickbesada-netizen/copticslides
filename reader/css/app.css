@@ -1,3 +1,16 @@
+/* Unicode adaptation of the traditional Avva Shenouda liturgical typeface.
+   Source: Moheb Mekhaiel / FreeSerif; St-Takla font archive.
+   Keep Unicode prayer data unchanged. */
+@font-face {
+  font-family: 'Traditional Bohairic';
+  src: local('FreeSerifAvvaShenouda'),
+       url('https://cdn.jsdelivr.net/gh/abanobmikaeel/coptic.io@1a2f16a7e05f2e29d18a994ce65da4fb52cd11be/apps/web/public/fonts/FreeSerifAvvaShenouda.ttf') format('truetype'),
+       url('https://st-takla.org/Dlds/fonts/webfont/FreeSerifAvvaShenouda.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0020-0040,U+005B-0060,U+007B-007E,U+0300-036F,U+0370-03FF,U+2C80-2CFF;
+}
 @font-face { font-family: 'Antinoou Web'; src: local('Antinoou'), url('https://cdn.jsdelivr.net/gh/CopticScriptorium/coptic-nlp@master/antinoou-webfont.woff') format('woff'); font-style: normal; font-weight: 400; font-display: swap; }
 @font-face { font-family: 'CopticFont'; src: url(../fonts/coptic.woff2) format('woff2'); font-display: swap; }
 @font-face { font-family: 'Amiri'; src: url(../fonts/amiri-400.woff2) format('woff2'); font-weight: 400; font-display: swap; }
@@ -13,7 +26,7 @@
   --imgfilter: multiply; --imgmode: multiply; --hi: #f6e7a7;
   --pattern: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2264%22%20height%3D%2264%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23cfc6ab%22%20stroke-width%3D%221.1%22%20opacity%3D%22.75%22%3E%3Cpath%20d%3D%22M32%2014%20L37%2027%20L50%2032%20L37%2037%20L32%2050%20L27%2037%20L14%2032%20L27%2027%20Z%22/%3E%3Cpath%20d%3D%22M19.3%2019.3%20L32%2023%20L44.7%2019.3%20L41%2032%20L44.7%2044.7%20L32%2041%20L19.3%2044.7%20L23%2032%20Z%22/%3E%3Cpath%20d%3D%22M0%20-4%20v8%20M-4%200%20h8%20M64%20-4%20v8%20M60%200%20h8%20M0%2060%20v8%20M-4%2064%20h8%20M64%2060%20v8%20M60%2064%20h8%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%220%22%20r%3D%222.2%22/%3E%3Ccircle%20cx%3D%2264%22%20cy%3D%220%22%20r%3D%222.2%22/%3E%3Ccircle%20cx%3D%220%22%20cy%3D%2264%22%20r%3D%222.2%22/%3E%3Ccircle%20cx%3D%2264%22%20cy%3D%2264%22%20r%3D%222.2%22/%3E%3C/g%3E%3Cg%20fill%3D%22%23f3efe2%22%20opacity%3D%22.55%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%223%22/%3E%3C/g%3E%3C/svg%3E");
   --fs: 20px; --en: 'Garamond', Georgia, 'Times New Roman', serif; --ar: 'Amiri', 'Noto Naskh Arabic', 'Traditional Arabic', serif;
-  --cop: 'Antinoou Web', 'Antinoou', 'CopticFont', 'Noto Sans Coptic', serif; --ui: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --cop: 'Traditional Bohairic', 'FreeSerifAvvaShenouda', 'Antinoou Web', 'Antinoou', 'CopticFont', serif; --ui: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color-scheme: light;
 }
 :root[data-theme="night"] { --bg: #000; --bg2: #0b0907; --panel: #121009; --line: #3a2e22; --ink: #f4d867; --ink2: #f1df9c; --muted: #a8956a; --accent: #d4a73a;
@@ -307,3 +320,16 @@ main { width: 100%; min-width: 0; }
 .cell.cop { font-size:calc(var(--fs) * 1.08); line-height:1.65; }
 .row.heading .cell.cop, .row.role .cell.cop { font-weight:400; }
 .present-stage .cell.cop { line-height:1.5; }
+
+/* Printed liturgical-book treatment, restricted to genuine Coptic text. */
+.cell.cop, .present-stage .cell.cop, .hit .x.copt {
+  font-family: var(--cop);
+  font-weight:400;
+  letter-spacing:normal;
+  word-spacing:0.06em;
+  -webkit-text-stroke:0.012em currentColor;
+  font-variant-ligatures:normal;
+  font-synthesis:none;
+}
+.cell.cop { font-size:calc(var(--fs) * 1.18); line-height:1.42; }
+.present-stage .cell.cop { line-height:1.4; }
