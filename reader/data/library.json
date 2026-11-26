@@ -8182,6 +8182,105 @@
         "ar": "صلاة الختام"
       },
       "heads": []
+    },
+    "cymbal-variants-32": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 32,
+      "end": 35,
+      "title": {
+        "en": "Watos — Wednesday to Saturday",
+        "ar": "واطس"
+      },
+      "heads": []
+    },
+    "cymbal-variants-35": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 35,
+      "end": 40,
+      "title": {
+        "en": "Adam — Sunday to Tuesday",
+        "ar": "آدم"
+      },
+      "heads": []
+    },
+    "cymbal-variants-40": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 40,
+      "end": 89,
+      "title": {
+        "en": "Common continuation",
+        "ar": "التكملة المشتركة"
+      },
+      "heads": []
+    },
+    "hierarch-responses-308": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 308,
+      "end": 316,
+      "title": {
+        "en": "Standard conclusion",
+        "ar": "الختام المعتاد"
+      },
+      "heads": []
+    },
+    "hierarch-responses-316": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 316,
+      "end": 323,
+      "title": {
+        "en": "When a Pope, Metropolitan or Bishop is present",
+        "ar": "بحضور البابا أو المطران أو الأسقف"
+      },
+      "heads": []
+    },
+    "hierarch-responses-323": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 323,
+      "end": 335,
+      "title": {
+        "en": "Final priest and congregation prayers",
+        "ar": "صلوات الختام"
+      },
+      "heads": []
+    },
+    "pauline-variants-106": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-basil",
+      "start": 106,
+      "end": 113,
+      "title": {
+        "en": "Standard introduction and response",
+        "ar": "المقدمة والمرد المعتاد"
+      },
+      "heads": []
+    },
+    "pauline-variants-113": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-basil",
+      "start": 113,
+      "end": 117,
+      "title": {
+        "en": "Introduction in the presence of a hierarch",
+        "ar": "المقدمة بحضور رئيس كهنة"
+      },
+      "heads": []
+    },
+    "pauline-variants-117": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-basil",
+      "start": 117,
+      "end": 126,
+      "title": {
+        "en": "Apetjeek",
+        "ar": "أبيتك"
+      },
+      "heads": []
     }
   },
   "nodes": {
@@ -8907,6 +9006,9 @@
         },
         {
           "doc": "incense-prayer-sections-30"
+        },
+        {
+          "node": "cymbal-variants"
         }
       ]
     },
@@ -9770,6 +9872,9 @@
         },
         {
           "doc": "basil-reading-sections-491"
+        },
+        {
+          "node": "pauline-variants"
         }
       ]
     },
@@ -9808,6 +9913,69 @@
         },
         {
           "doc": "incense-prayer-sections-308"
+        },
+        {
+          "node": "hierarch-responses"
+        }
+      ]
+    },
+    "cymbal-variants": {
+      "id": "cymbal-variants",
+      "title": {
+        "en": "Adam and Watos introductions",
+        "ar": "مقدمات آدم وواطس"
+      },
+      "icon": "cymbals",
+      "view": "list",
+      "items": [
+        {
+          "doc": "cymbal-variants-32"
+        },
+        {
+          "doc": "cymbal-variants-35"
+        },
+        {
+          "doc": "cymbal-variants-40"
+        }
+      ]
+    },
+    "hierarch-responses": {
+      "id": "hierarch-responses",
+      "title": {
+        "en": "Concluding prayer options",
+        "ar": "اختيارات صلاة الختام"
+      },
+      "icon": "matins",
+      "view": "list",
+      "items": [
+        {
+          "doc": "hierarch-responses-308"
+        },
+        {
+          "doc": "hierarch-responses-316"
+        },
+        {
+          "doc": "hierarch-responses-323"
+        }
+      ]
+    },
+    "pauline-variants": {
+      "id": "pauline-variants",
+      "title": {
+        "en": "Pauline introduction options",
+        "ar": "اختيارات مقدمة البولس"
+      },
+      "icon": "basil",
+      "view": "list",
+      "items": [
+        {
+          "doc": "pauline-variants-106"
+        },
+        {
+          "doc": "pauline-variants-113"
+        },
+        {
+          "doc": "pauline-variants-117"
         }
       ]
     }
