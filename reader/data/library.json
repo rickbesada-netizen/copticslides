@@ -9134,6 +9134,38 @@
         "ar": "القنديل — الصلوات السبع والمسحة"
       },
       "heads": []
+    },
+    "baptism-source-boy": {
+      "file": "baptism-index.json",
+      "title": {
+        "en": "Absolution of the Woman — Boy",
+        "ar": "تحليل المرأة إذا ولدت ذكرا"
+      },
+      "heads": []
+    },
+    "baptism-source-girl": {
+      "file": "baptism-index.json",
+      "title": {
+        "en": "Absolution of the Woman — Girl",
+        "ar": "تحليل المرأة إذا ولدت أنثى"
+      },
+      "heads": []
+    },
+    "baptism-source-rite": {
+      "file": "baptism-index.json",
+      "title": {
+        "en": "Order of Holy Baptism",
+        "ar": "طقس المعمودية المقدسة"
+      },
+      "heads": []
+    },
+    "baptism-source-myron": {
+      "file": "baptism-index.json",
+      "title": {
+        "en": "Anointing with Holy Myron",
+        "ar": "المسحة بالميرون المقدس"
+      },
+      "heads": []
     }
   },
   "nodes": {
@@ -11178,12 +11210,25 @@
     "baptism": {
       "id": "baptism",
       "title": {
-        "en": "Baptism — texts pending",
-        "ar": "المعمودية — النصوص قيد الإعداد"
+        "en": "Baptism — source index",
+        "ar": "المعمودية — فهرس المصدر"
       },
       "icon": "lakkan",
       "view": "list",
-      "items": []
+      "items": [
+        {
+          "doc": "baptism-source-boy"
+        },
+        {
+          "doc": "baptism-source-girl"
+        },
+        {
+          "doc": "baptism-source-rite"
+        },
+        {
+          "doc": "baptism-source-myron"
+        }
+      ]
     }
   },
   "home": [
