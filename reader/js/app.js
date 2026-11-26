@@ -920,7 +920,10 @@
   function presentOpen(startRow = 0, full = true) {
     const collapsed = new Set(Array.from(view.querySelectorAll('.row.collapsed, .row.heading.closed'), n => Number(n.dataset.i)));
     pRows = current.rows.filter(r => !collapsed.has(r._i) && roleVisible(r) && !(r.kind === 'rubric' && (!S.comments || /scripture passage is displayed below its reference/i.test(r.en || ''))) && (r.img || r.kind === 'role' || r.kind === 'heading' || current.cols.some(c => hasCol(r, c))));
-    // merge role markers into the following slide
+    // Role markers are already carried by prepareRows on each prayer.
+    // Excluding standalone markers prevents duplicate slides and incorrect counts.
+    pRows = pRows.filter(r => r.kind !== 'role');
+
     pIdx = Math.max(0, pRows.findIndex(r => r._i >= startRow));
     $('#present').classList.add('on');
     if (full) { const pe = $('#present'); if (pe.requestFullscreen) pe.requestFullscreen().catch(() => {}); }
@@ -976,8 +979,6 @@
   }
   function presentStep(d) {
     let n = pIdx + d;
-    if (pRows[pIdx] && pRows[pIdx].kind === 'role' && d > 0) n = pIdx + 2;
-    if (d < 0 && pRows[n - 1] && pRows[n - 1].kind === 'role') n = n - 1;
     if (n >= pRows.length) { presentEnd(); return; }
     pIdx = Math.max(0, n); presentShow();
   }
