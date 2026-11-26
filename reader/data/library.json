@@ -7973,6 +7973,215 @@
         "ar": "اليوم التاسع والعشرون من الشهر القبطي"
       },
       "heads": []
+    },
+    "basil-reading-sections-91": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-basil",
+      "start": 91,
+      "end": 105,
+      "title": {
+        "en": "Intercessions",
+        "ar": "الشفاعات"
+      },
+      "heads": []
+    },
+    "basil-reading-sections-106": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-basil",
+      "start": 106,
+      "end": 126,
+      "title": {
+        "en": "Pauline Epistle and Responses",
+        "ar": "البولس ومرداته"
+      },
+      "heads": []
+    },
+    "basil-reading-sections-126": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-basil",
+      "start": 126,
+      "end": 136,
+      "title": {
+        "en": "Catholic Epistle",
+        "ar": "الكاثوليكون"
+      },
+      "heads": []
+    },
+    "basil-reading-sections-136": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-basil",
+      "start": 136,
+      "end": 161,
+      "title": {
+        "en": "Acts and Saint Commemorations",
+        "ar": "الإبركسيس وتذكارات القديسين"
+      },
+      "heads": []
+    },
+    "basil-reading-sections-161": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-basil",
+      "start": 161,
+      "end": 166,
+      "title": {
+        "en": "Trisagion",
+        "ar": "الثلاث تقديسات"
+      },
+      "heads": []
+    },
+    "basil-reading-sections-166": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-basil",
+      "start": 166,
+      "end": 192,
+      "title": {
+        "en": "Litany of the Gospel",
+        "ar": "أوشية الإنجيل"
+      },
+      "heads": []
+    },
+    "basil-reading-sections-192": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-basil",
+      "start": 192,
+      "end": 223,
+      "title": {
+        "en": "Gospel and Response",
+        "ar": "الإنجيل والمرد"
+      },
+      "heads": []
+    },
+    "basil-reading-sections-223": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-basil",
+      "start": 223,
+      "end": 277,
+      "title": {
+        "en": "Three Major Litanies",
+        "ar": "الأواشي الثلاث الكبار"
+      },
+      "heads": []
+    },
+    "basil-reading-sections-428": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-basil",
+      "start": 428,
+      "end": 491,
+      "title": {
+        "en": "Seven Minor Litanies and Commemoration",
+        "ar": "الأواشي السبع والتذكار"
+      },
+      "heads": []
+    },
+    "basil-reading-sections-491": {
+      "file": "deacon.json",
+      "parent": "dc-liturgy-of-st-basil",
+      "start": 491,
+      "end": 517,
+      "title": {
+        "en": "Prayer of the Departed",
+        "ar": "صلاة الراقدين"
+      },
+      "heads": []
+    },
+    "incense-prayer-sections-30": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 30,
+      "end": 89,
+      "title": {
+        "en": "Verses of the Cymbals — Watos and Adam",
+        "ar": "أرباع الناقوس"
+      },
+      "heads": []
+    },
+    "incense-prayer-sections-89": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 89,
+      "end": 108,
+      "title": {
+        "en": "Evening and Saturday Morning Litanies",
+        "ar": "أواشي العشية وباكر السبت"
+      },
+      "heads": []
+    },
+    "incense-prayer-sections-108": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 108,
+      "end": 145,
+      "title": {
+        "en": "Morning Incense Litanies",
+        "ar": "أواشي بخور باكر"
+      },
+      "heads": []
+    },
+    "incense-prayer-sections-145": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 145,
+      "end": 165,
+      "title": {
+        "en": "Gloria and Trisagion",
+        "ar": "الذكصولوجية والثلاث تقديسات"
+      },
+      "heads": []
+    },
+    "incense-prayer-sections-165": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 165,
+      "end": 189,
+      "title": {
+        "en": "Introduction to the Creed and Creed",
+        "ar": "مقدمة قانون الإيمان"
+      },
+      "heads": []
+    },
+    "incense-prayer-sections-189": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 189,
+      "end": 215,
+      "title": {
+        "en": "Litany of the Gospel",
+        "ar": "أوشية الإنجيل"
+      },
+      "heads": []
+    },
+    "incense-prayer-sections-215": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 215,
+      "end": 240,
+      "title": {
+        "en": "Gospel",
+        "ar": "الإنجيل"
+      },
+      "heads": []
+    },
+    "incense-prayer-sections-240": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 240,
+      "end": 301,
+      "title": {
+        "en": "Three Major Litanies",
+        "ar": "الأواشي الثلاث الكبار"
+      },
+      "heads": []
+    },
+    "incense-prayer-sections-308": {
+      "file": "deacon.json",
+      "parent": "dc-offering-of-incense-vespers-matins",
+      "start": 308,
+      "end": 335,
+      "title": {
+        "en": "Concluding Prayer and Hierarch Responses",
+        "ar": "صلاة الختام"
+      },
+      "heads": []
     }
   },
   "nodes": {
@@ -8695,6 +8904,9 @@
         },
         {
           "doc": "res-19"
+        },
+        {
+          "doc": "incense-prayer-sections-30"
         }
       ]
     },
@@ -8738,6 +8950,9 @@
         },
         {
           "doc": "dc-liturgy-of-st-basil@dist"
+        },
+        {
+          "node": "basil-reading-sections"
         }
       ]
     },
@@ -8825,6 +9040,9 @@
         },
         {
           "doc": "dc-offering-of-incense-vespers-matins@conclusion"
+        },
+        {
+          "node": "incense-prayer-sections"
         }
       ]
     },
@@ -8857,6 +9075,9 @@
         },
         {
           "doc": "dc-offering-of-incense-vespers-matins@conclusion"
+        },
+        {
+          "node": "incense-prayer-sections"
         }
       ]
     },
@@ -9508,6 +9729,85 @@
         },
         {
           "doc": "matrimony-section-240"
+        }
+      ]
+    },
+    "basil-reading-sections": {
+      "id": "basil-reading-sections",
+      "title": {
+        "en": "Readings, intercessions and litanies",
+        "ar": "القراءات والشفاعات والأواشي"
+      },
+      "icon": "basil",
+      "view": "list",
+      "items": [
+        {
+          "doc": "basil-reading-sections-91"
+        },
+        {
+          "doc": "basil-reading-sections-106"
+        },
+        {
+          "doc": "basil-reading-sections-126"
+        },
+        {
+          "doc": "basil-reading-sections-136"
+        },
+        {
+          "doc": "basil-reading-sections-161"
+        },
+        {
+          "doc": "basil-reading-sections-166"
+        },
+        {
+          "doc": "basil-reading-sections-192"
+        },
+        {
+          "doc": "basil-reading-sections-223"
+        },
+        {
+          "doc": "basil-reading-sections-428"
+        },
+        {
+          "doc": "basil-reading-sections-491"
+        }
+      ]
+    },
+    "incense-prayer-sections": {
+      "id": "incense-prayer-sections",
+      "title": {
+        "en": "Individual incense prayers",
+        "ar": "صلوات رفع البخور"
+      },
+      "icon": "matins",
+      "view": "list",
+      "items": [
+        {
+          "doc": "incense-prayer-sections-30"
+        },
+        {
+          "doc": "incense-prayer-sections-89"
+        },
+        {
+          "doc": "incense-prayer-sections-108"
+        },
+        {
+          "doc": "incense-prayer-sections-145"
+        },
+        {
+          "doc": "incense-prayer-sections-165"
+        },
+        {
+          "doc": "incense-prayer-sections-189"
+        },
+        {
+          "doc": "incense-prayer-sections-215"
+        },
+        {
+          "doc": "incense-prayer-sections-240"
+        },
+        {
+          "doc": "incense-prayer-sections-308"
         }
       ]
     }
