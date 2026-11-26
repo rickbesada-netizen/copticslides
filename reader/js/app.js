@@ -555,7 +555,7 @@
       const r = view.querySelector(`.row[data-i="${rowFocus}"]`);
       if (r) { r.scrollIntoView({ block: 'center' }); r.classList.add('flash'); }
     }
-    if (S.mode === 'slides' && rowFocus == null) presentOpen(0, false);
+    if ((S.mode === 'slides' || $('#present').classList.contains('on')) && rowFocus == null) presentOpen(0, false);
   }
 
   function renderDoc() {
@@ -930,7 +930,7 @@
     const stage = $('#presentStage');
     stage.replaceChildren();
     let r = pRows[pIdx];
-    if (!r) return;
+    if (!r) { stage.append(el('div', {class:'p-head'}, 'No visible prayer rows. Expand a section or change display settings.')); $('#pCount').textContent = '0 / 0'; return; }
     const cols = current.cols;
     stage.style.gridTemplateColumns = gridTemplate(cols);
     let roleRow = null;
@@ -985,7 +985,7 @@
     const order = nodeDocs(current.node);
     const next = order[order.indexOf(current.id) + 1];
     const stage = $('#presentStage');
-    stage.replaceChildren(el('div', { class: 'p-head', style: 'font: 4vh var(--en)' }, t('endOfDoc'), next ? el('div', { style: 'margin-top:3vh' }, el('a', { href: '#/doc/' + next, style: 'color:#f6d860', onclick: () => { setTimeout(() => presentOpen(0, false), 400); } }, t('nextDoc') + ': ' + tt(LIB.docs[next].title) + ' ›')) : null));
+    stage.replaceChildren(el('div', { class: 'p-head', style: 'font: 4vh var(--en)' }, t('endOfDoc'), next ? el('div', { style: 'margin-top:3vh' }, el('a', { href: '#/doc/' + next, style: 'color:#f6d860', onclick: () => { /* viewDoc resumes presentation after loading the next document */ } }, t('nextDoc') + ': ' + tt(LIB.docs[next].title) + ' ›')) : null));
   }
   function presentClose() { $('#present').classList.remove('on'); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); }
 
