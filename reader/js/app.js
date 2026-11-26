@@ -435,6 +435,18 @@
       }));
       body = el('div', { class: 'plist' }, el('div', { class: 'side' }, el('div', { class: 'art', html: iconOf(n.icon) })), links);
     }
+    if (nid === 'creation-litanies') {
+      const j = nowJDN(), c = CopticCal.jdnToCoptic(j);
+      const md = c.m * 100 + c.d;
+      const seeds = md >= 210 && md < 510;
+      const fruits = md >= 510 && md < 1012;
+      const en = seeds ? 'Seeds and herbs' : fruits ? 'Fruits and air of heaven' : 'Waters of the rivers';
+      const ar = seeds ? 'الزروع والعشب' : fruits ? 'الثمار وأهوية السماء' : 'مياه الأنهار';
+      body = el('div',{},el('section',{class:'libpanel',style:'padding:16px;margin-bottom:12px'},
+        el('strong',{},gregText(j)),el('p',{},copText(j)),
+        el('h3',{},S.ui === 'ar' ? ar : en),
+        el('p',{class:'note'},S.ui === 'ar' ? 'إرشاد موسمي؛ النصوص أدناه تشمل الطلبات مجتمعة.' : 'Seasonal guidance; the available texts below contain the combined petitions. Confirm local liturgical practice.')),body);
+    }
     if (nid === 'fractions') {
       const j = nowJDN(), c = CopticCal.jdnToCoptic(j), season = CopticCal.seasonInfo(j), d = CopticCal.season(j).diff;
       const choices = [];
