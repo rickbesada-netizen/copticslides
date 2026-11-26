@@ -333,3 +333,22 @@ main { width: 100%; min-width: 0; }
 }
 .cell.cop { font-size:calc(var(--fs) * 1.18); line-height:1.42; }
 .present-stage .cell.cop { line-height:1.4; }
+
+
+/* Comfortable multilingual book layout, with a separate gutter for each language. */
+.language-reader .rows, .language-reader .colhdr { width:100%; max-width:1480px; padding-inline:clamp(18px,4vw,56px); }
+.language-reader .row, .language-reader .colhdr { column-gap:clamp(22px,3.4vw,56px); }
+.language-reader .row:not(.heading):not(.role) { padding-block:20px; }
+.language-reader .cell { line-height:1.7; }
+.language-reader .cell.cop { font-size:calc(var(--fs) * 1.10); line-height:1.8; word-spacing:0.10em; -webkit-text-stroke:0; }
+.language-reader .cell.ar { font-size:calc(var(--fs) * 1.12); line-height:1.85; }
+.language-reader .cell.ar_lat, .language-reader .cell.cop_lat { font-size:var(--fs); line-height:1.7; }
+.language-reader .row.role { padding-top:17px; }
+.language-reader .row.heading { margin-top:26px; }
+.present-stage { column-gap:clamp(18px,3.4vw,55px); }
+.present-stage .cell.cop { line-height:1.6; -webkit-text-stroke:0; word-spacing:0.10em; }
+@media(max-width:820px) {
+  .language-reader .rows,.language-reader .colhdr { padding-inline:18px; }
+  .language-reader .row,.language-reader .colhdr { column-gap:18px; }
+  .language-reader.stack .row:not(.heading):not(.role) { padding-block:16px; row-gap:14px; }
+}
