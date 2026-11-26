@@ -81,7 +81,10 @@
     return Object.values(LIB.nodes).find(n => nodeDocs(n).includes(id)) || null;
   }
   function parentOfNode(nid) {
-    return Object.values(LIB.nodes).find(n => n.items.some(x => x.node === nid)) || null;
+    let preferred;
+    try { preferred = JSON.parse(sessionStorage.getItem('lr.parents') || '{}')[nid]; } catch(e) {}
+    const valid = n => n && n.items.some(x => x.node === nid);
+    return valid(LIB.nodes[preferred]) ? LIB.nodes[preferred] : Object.values(LIB.nodes).find(valid) || null;
   }
   const iconOf = key => (window.TILE_ART[key] || window.TILE_ART.default);
 
@@ -413,7 +416,15 @@
     const lib = await library();
     const n = lib.nodes[nid];
     if (!n) return go('#/');
-    try { sessionStorage.setItem('lr.node', nid); } catch (e) { /* ignore */ }
+    try {
+      const previous = sessionStorage.getItem('lr.node');
+      const parents = JSON.parse(sessionStorage.getItem('lr.parents') || '{}');
+      if (previous !== nid && lib.nodes[previous]?.items.some(x => x.node === nid)) {
+        parents[nid] = previous;
+        sessionStorage.setItem('lr.parents', JSON.stringify(parents));
+      }
+      sessionStorage.setItem('lr.node', nid);
+    } catch (e) { /* ignore */ }
     setBar('', {});
     const parent = parentOfNode(nid);
     const back = parent ? '#/n/' + parent.id : '#/';
