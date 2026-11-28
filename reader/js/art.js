@@ -112,6 +112,12 @@
   A.apostles = frame(GOLD,
     `<g transform="rotate(-35 50 52)"><rect x="47" y="20" width="6" height="52" fill="#7a5418"/><circle cx="50" cy="18" r="8" fill="none" stroke="#7a5418" stroke-width="4"/><rect x="53" y="60" width="10" height="4" fill="#7a5418"/><rect x="53" y="67" width="7" height="4" fill="#7a5418"/></g>
      <g transform="rotate(35 50 52)"><path d="M47 14 h6 v58 l-3 8 l-3 -8z" fill="#e9ecef" stroke="#5b6470" stroke-width="1"/><rect x="38" y="68" width="24" height="4" fill="#8a2a1a"/><rect x="47.5" y="72" width="5" height="12" fill="#8a2a1a"/></g>`);
+
+  // My Songs: a lyre with music notes
+  A.songs = frame({ defs: grad('sg', [[0, '#2e4a7a'], [1, '#14223f']]), fill: 'url(#sg)' },
+    `<path d="M34 78 C22 60 24 34 38 22 M66 78 C78 60 76 34 62 22" stroke="#e2bd5e" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M30 34 h40" stroke="#e2bd5e" stroke-width="3"/><path d="M32 78 h36" stroke="#e2bd5e" stroke-width="5" stroke-linecap="round"/>
+     ${[40, 46, 52, 58].map(x => `<path d="M${x} 35 V77" stroke="#f7e3a0" stroke-width="1.2"/>`).join('')}<circle cx="38" cy="22" r="3" fill="#e2bd5e"/><circle cx="62" cy="22" r="3" fill="#e2bd5e"/>
+     <path d="M74 14 v14" stroke="#f7e3a0" stroke-width="2"/><ellipse cx="71" cy="28" rx="4" ry="3" fill="#f7e3a0"/><path d="M74 14 l8 3" stroke="#f7e3a0" stroke-width="2"/>`);
   A.default = A.cross;
   window.TILE_ART = A;
 })();

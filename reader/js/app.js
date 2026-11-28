@@ -81,6 +81,7 @@
   async function loadDoc(id) {
     const lib = await library();
     const m = lib.docs[id];
+    if (/^song-\d+$/.test(id)) return songDoc(id);
     if (!m) return null;
     if (m.virtual) return { meta: m, sec: await buildReadingDoc(id) };
     const d = await getJSON('data/' + m.file);
@@ -105,6 +106,116 @@
   const iconOf = key => (window.TILE_ART[key] || window.TILE_ART.default);
 
 
+
+  // ------------------------------------------------------------------ My Songs (private, on this device only)
+  // The person opens their own song deck (a PDF exported from the slides). It is read in the browser,
+  // split into songs, and kept in this device's storage. Nothing is uploaded to the website.
+  I18N.en.cat_songs = 'My Songs'; if (I18N.ar) I18N.ar.cat_songs = 'ترانيمي';
+  const SongDB = {
+    open() { return new Promise((res, rej) => { const r = indexedDB.open('lr-songs', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); },
+    async get(k) { const db = await this.open(); return new Promise(res => { const q = db.transaction('kv').objectStore('kv').get(k); q.onsuccess = () => res(q.result); q.onerror = () => res(undefined); }); },
+    async set(k, v) { const db = await this.open(); return new Promise((res, rej) => { const tx = db.transaction('kv', 'readwrite'); tx.objectStore('kv').put(v, k); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); },
+  };
+  let SONGS = null;
+  async function songs() { if (!SONGS) { try { SONGS = (await SongDB.get('deck')) || null; } catch (e) { SONGS = null; } } return SONGS; }
+  function loadPdfJs() {
+    if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    return new Promise((res, rej) => {
+      const sc = document.createElement('script');
+      sc.src = 'js/vendor/pdf.min.js';
+      sc.onload = () => { window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'js/vendor/pdf.worker.min.js'; res(window.pdfjsLib); };
+      sc.onerror = () => rej(new Error('Could not load the PDF reader (are you online?)'));
+      document.head.append(sc);
+    });
+  }
+  // one slide = lines of text, top to bottom
+  async function pageLines(page) {
+    const tc = await page.getTextContent();
+    const items = tc.items.filter(i => i.str && i.str.trim());
+    const rows = [];
+    for (const it of items.sort((a, b) => b.transform[5] - a.transform[5] || a.transform[4] - b.transform[4])) {
+      const y = it.transform[5], h = Math.abs(it.transform[3]) || 10;
+      const r = rows.find(r => Math.abs(r.y - y) < h * 0.5);
+      if (r) r.items.push(it); else rows.push({ y, items: [it] });
+    }
+    return rows.sort((a, b) => b.y - a.y).map(r => {
+      const its = r.items.sort((a, b) => a.transform[4] - b.transform[4]);
+      const rtl = its.some(i => /[؀-ۿ]/.test(i.str)) && its.every(i => i.dir !== 'ltr' || !/[A-Za-z]/.test(i.str));
+      return (rtl ? its.reverse() : its).map(i => i.str).join(' ').normalize('NFKC').replace(/\(\s*\)/g, '').replace(/\s+/g, ' ').trim();
+    }).filter(l => l && l !== '●');
+  }
+  const norm = s => s.toLowerCase().replace(/[^a-z0-9؀-ۿ]+/g, ' ').trim();
+  async function importSongs(file, progress) {
+    const pdfjs = await loadPdfJs();
+    const doc = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise;
+    const pages = [];
+    for (let i = 1; i <= doc.numPages; i++) {
+      pages.push(await pageLines(await doc.getPage(i)));
+      if (i % 25 === 0) progress(`Reading slide ${i} of ${doc.numPages}…`);
+    }
+    // index slides (bulleted lists of titles) at the start are skipped; a slide with a single short
+    // line is a song's title slide; a song's title repeated as the last line of its slides is dropped
+    const titles = new Set(pages.filter(ls => ls.length === 1 && ls[0].length < 70).map(ls => norm(ls[0])));
+    // contents slides: mostly song titles and single letters
+    const isIndex = ls => ls.length >= 5 && ls.filter(l => l.length <= 2 || titles.has(norm(l))).length >= ls.length * 0.6;
+    let start = 0;
+    while (start < pages.length && (start === 0 || isIndex(pages[start]) || pages[start].length === 0)) start++;
+    const list = []; let cur = null;
+    for (const ls of pages.slice(start)) {
+      if (!ls.length) continue;
+      if (ls.length === 1 && ls[0].length < 70) { cur = { title: ls[0], slides: [] }; list.push(cur); continue; }
+      let lines = ls.slice();
+      const foot = norm(lines[lines.length - 1]);
+      if (cur && foot === norm(cur.title)) lines.pop();
+      else if (titles.has(foot) && (!cur || foot !== norm(cur.title))) { cur = { title: lines.pop(), slides: [] }; list.push(cur); }
+      if (!cur) { cur = { title: lines[0], slides: [] }; list.push(cur); }
+      if (lines.length) cur.slides.push(lines.join('\n'));
+    }
+    const deck = { name: file.name, imported: new Date().toISOString(), songs: list.filter(s => s.slides.length && s.title.replace(/[^A-Za-z\u0600-\u06FF]/g, '').length > 2) };
+    await SongDB.set('deck', deck);
+    SONGS = deck;
+    return deck;
+  }
+  async function viewSongs() {
+    setBar(t('cat_songs'), { back: true, keep: true });
+    const deck = await songs();
+    const status = el('p', { class: 'note', style: 'padding:0 16px' });
+    const input = el('input', { type: 'file', accept: 'application/pdf,.pdf', style: 'display:none' });
+    input.onchange = async () => {
+      const f = input.files[0]; if (!f) return;
+      status.textContent = 'Opening ' + f.name + '…';
+      try { const d = await importSongs(f, m => { status.textContent = m; }); status.textContent = `Imported ${d.songs.length} songs.`; viewSongs(); }
+      catch (e) { status.textContent = 'Import failed: ' + e.message; }
+    };
+    const pick = el('button', { class: 'btn', onclick: () => input.click() }, deck ? 'Import a new song file' : 'Open your song PDF');
+    const intro = el('p', { class: 'note', style: 'text-align:start;padding:0 16px' },
+      'Open your praise and worship song deck (a PDF saved from the slides). It is read on this device and kept only here: it is not uploaded to the website or shared. Each song opens like the other services, including the slide show.');
+    if (!deck) { view.replaceChildren(el('h2', { class: 'ctitle' }, t('cat_songs')), intro, el('div', { class: 'pad' }, pick, input), status); return; }
+    const box = el('div', { class: 'list' });
+    const q = el('input', { type: 'search', placeholder: t('filter') });
+    const draw = () => {
+      const f = norm(q.value); box.replaceChildren();
+      let letter = null;
+      deck.songs.map((s, i) => ({ s, i })).sort((a, b) => a.s.title.localeCompare(b.s.title)).forEach(({ s, i }) => {
+        if (f && !norm(s.title).includes(f) && !norm(s.slides.join(' ')).includes(f)) return;
+        const L = /^[A-Za-z\u0600-\u06FF]/.test(s.title) ? s.title[0].toUpperCase() : '#';
+        if (!f && L !== letter) { box.append(el('div', { class: 'sh' }, L)); letter = L; }
+        box.append(el('a', { class: 'li', href: '#/doc/song-' + i }, el('span', { class: 't' }, s.title), el('span', { class: 'a', style: 'direction:ltr;font-family:var(--ui);font-size:13px' }, s.slides.length + ' slides')));
+      });
+    };
+    q.oninput = draw; draw();
+    view.replaceChildren(el('div', { class: 'sbox' }, q), box,
+      el('p', { class: 'note', style: 'padding:12px 16px' }, `${deck.songs.length} songs from ${deck.name}, kept on this device only.`),
+      el('div', { class: 'pad' }, pick, input, ' ', el('button', { class: 'btn', onclick: async () => { await SongDB.set('deck', null); SONGS = null; viewSongs(); } }, 'Remove songs from this device')), status);
+  }
+  async function songDoc(id) {
+    const deck = await songs(); const s = deck && deck.songs[+id.slice(5)];
+    if (!s) return null;
+    const ar = x => /[؀-ۿ]/.test(x) && (x.match(/[؀-ۿ]/g) || []).length > (x.match(/[A-Za-z]/g) || []).length;
+    const rows = [{ kind: 'heading', en: s.title }, ...s.slides.map(x => ar(x) ? { ar: x, cls: 'song' } : { en: x, cls: 'song' })];
+    return { meta: { title: { en: s.title } }, sec: { id, title: { en: s.title, ar: '' }, rows } };
+  }
+
   // ------------------------------------------------------------------ daily readings (Katameros)
   // Readings > Vespers / Matins / Liturgy, built for the selected date from the Katameros references
   // (data/katameros.json), the Synaxarium (data/synaxarium.json) and the deacon's responses.
@@ -118,6 +229,7 @@
     'rd-l-pg': { node: 'rd-liturgy', svc: 'liturgy', part: 'pg', title: { en: 'Psalm and Gospel', ar: 'المزمور والإنجيل' } },
   };
   function addReadingNodes(lib) {
+    if (!lib.home.some(x => x.special === 'songs')) lib.home.push({ special: 'songs', title: { en: 'My Songs', ar: 'ترانيمي' }, icon: 'songs', cat: true });
     if (lib.nodes['rd-liturgy']) return;
     for (const [id, d] of Object.entries(RD)) lib.docs[id] = { virtual: true, title: d.title, heads: [] };
     const node = (id, en, ar, icon, docs) => (lib.nodes[id] = { id, title: { en, ar }, icon, view: 'list', items: docs.map(doc => ({ doc })) });
@@ -1025,6 +1137,7 @@
       else if (p[0] === 'occasion-readings') await viewOccasion();
       else if (p[0] === 'scripture-index') await viewScripture();
       else if (p[0] === 'index') await viewIndex();
+      else if (p[0] === 'songs') await viewSongs();
       else { current = { id: null, rows: [], cols: [] }; await viewHome(); }
     } catch (e) {
       console.error(e);
