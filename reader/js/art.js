@@ -98,6 +98,20 @@
     [[22, '#7d1a1a'], [44, '#2b3d5c'], [66, '#5a4426']].map(([y, c]) => `<rect x="18" y="${y}" width="64" height="16" rx="2" fill="${c}" stroke="#d9b158" stroke-width="1.4"/><path d="M26 ${y + 8}h30" stroke="#d9b158" stroke-width="1.6"/>`).join('') + `<path d="M70 22v20l4-4 4 4V22" fill="#c0392b"/>`);
   A.clergy = frame({ defs: rgrad('cl', [[0, '#5a4a2a'], [1, '#1a1208']]), fill: 'url(#cl)' },
     `<path d="M44 60 C40 70 40 84 46 94 H58 C62 84 62 70 58 60Z" fill="#e2b98a"/>${copticCross(51, 34, 40, '#e2bd5e', '#7a5418')}<path d="M51 52v10" stroke="#e2bd5e" stroke-width="4"/>`);
+
+  // baptismal font with the descending dove
+  A.baptism = frame({ defs: grad('bp', [[0, '#e9f2fb'], [1, '#6f9fd0']]), fill: 'url(#bp)' },
+    `<circle cx="50" cy="26" r="14" fill="#fff6d6" opacity=".7"/><path d="M50 20 q-10 -6 -18 2 q8 0 12 4 q-6 4 -4 10 q4 -6 10 -6 q6 0 10 6 q2 -6 -4 -10 q4 -4 12 -4 q-8 -8 -18 -2Z" fill="#ffffff" stroke="#9aa9b8" stroke-width=".8"/>
+     ${[0, 1, 2].map(i => `<path d="M${44 + i * 6} 40 v8" stroke="#ffffff" stroke-width="1.6" opacity=".8"/>`).join('')}
+     <path d="M20 58 h60 l-8 22 h-44z" fill="#c9a13d" stroke="#6a4614" stroke-width="1.5"/><ellipse cx="50" cy="58" rx="30" ry="6" fill="#7fb2df" stroke="#6a4614" stroke-width="1.5"/><rect x="40" y="80" width="20" height="10" fill="#a77a2a" stroke="#6a4614"/>${copticCross(50, 69, 16, '#7a5418')}`);
+  // Pentecost kneeling prayers: tongues of fire over a kneeling figure
+  A.prostration = frame({ defs: rgrad('ps', [[0, '#a33a1e'], [1, '#3a0e06']]), fill: 'url(#ps)' },
+    `${[26, 38, 50, 62, 74].map((x, i) => `<path d="M${x} ${30 - (i % 2) * 6} q-5 -9 0 -16 q5 7 0 16Z" fill="#ffb03a"/><path d="M${x} ${28 - (i % 2) * 6} q-2 -5 0 -8 q2 4 0 8Z" fill="#fff1c4"/>`).join('')}
+     <circle cx="40" cy="58" r="6" fill="#e9d3b0"/><path d="M34 64 q10 -2 16 8 l12 10 h-30 q-4 -10 2 -18Z" fill="#e2bd5e" stroke="#7a5418"/><path d="M50 70 l14 -6" stroke="#e2bd5e" stroke-width="3" stroke-linecap="round"/><path d="M22 86h56" stroke="#e2bd5e" stroke-width="3"/>`);
+  // the Apostles: St Peter's keys and St Paul's sword
+  A.apostles = frame(GOLD,
+    `<g transform="rotate(-35 50 52)"><rect x="47" y="20" width="6" height="52" fill="#7a5418"/><circle cx="50" cy="18" r="8" fill="none" stroke="#7a5418" stroke-width="4"/><rect x="53" y="60" width="10" height="4" fill="#7a5418"/><rect x="53" y="67" width="7" height="4" fill="#7a5418"/></g>
+     <g transform="rotate(35 50 52)"><path d="M47 14 h6 v58 l-3 8 l-3 -8z" fill="#e9ecef" stroke="#5b6470" stroke-width="1"/><rect x="38" y="68" width="24" height="4" fill="#8a2a1a"/><rect x="47.5" y="72" width="5" height="12" fill="#8a2a1a"/></g>`);
   A.default = A.cross;
   window.TILE_ART = A;
 })();
